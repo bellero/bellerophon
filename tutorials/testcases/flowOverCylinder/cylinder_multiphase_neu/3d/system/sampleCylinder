@@ -1,0 +1,66 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.3.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      sampleDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Set output format : choice of
+//      xmgr
+//      jplot
+//      gnuplot
+//      raw
+//      vtk
+//      ensight
+//      csv
+setFormat raw;
+
+surfaceFormat vtk;
+
+formatOptions
+{
+    ensight
+    {
+        format  ascii;
+    }
+}
+
+interpolationScheme cellPatchConstrained;
+
+fields
+(
+    pMean
+    p_rgh
+    alpha.waterMean
+    wallShearStress
+    patchSf
+    patchMagSf
+);
+
+sets
+(
+    cylinderPoints
+    {
+        type        patchSeed;
+        axis        xyz;
+        patches     ( cylinder );
+        maxPoints   10000000;
+    }
+);
+
+
+surfaces
+(
+);
+
+
+// *********************************************************************** //

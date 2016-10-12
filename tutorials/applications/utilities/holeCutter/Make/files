@@ -1,0 +1,7 @@
+holeSources/holeSource.C
+holeSources/triSurfaceAndRay.C
+holeSources/holeFromSet.C
+
+holeCutter.C
+
+EXE = $(FOAM_USER_APPBIN)/holeCutter

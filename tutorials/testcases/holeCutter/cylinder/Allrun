@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Source tutorial run functions
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+
+runApplication blockMesh
+runApplication topoSet
+cp system/refineMeshDict.1 system/refineMeshDict
+runApplication refineMesh -dict -overwrite
+cp system/refineMeshDict.2 system/refineMeshDict
+mv log.refineMesh log.refineMesh.1
+mv log.topoSet log.topoSet.1
+runApplication topoSet
+runApplication refineMesh -dict -overwrite
+rm system/refineMeshDict
+
+rm -rf constant/polyMesh/sets constant/polyMesh/*Zones*
+
+runApplication splitMeshRegions -makeCellZones -overwrite
+
+runApplication surfaceMeshTriangulate -patches "(inner)" inner.stl
+
+sed -i "s/region0/inner/" constant/polyMesh/cellZones
+sed -i "s/region1/outer/" constant/polyMesh/cellZones
+
+runApplication holeCutter
+runApplication subsetMesh -overwrite liveCells
+
+runApplication createPatch -overwrite
+

@@ -1,0 +1,387 @@
+import math
+import numpy as np
+import os
+
+def LFromNDeltaEpsilon(N, delta, epsilon):
+  """
+  Calculate edge length from number of cells, cell size and expansion ratio
+  """
+  return delta*(1.0-math.pow(epsilon,N))/(1.0-epsilon)
+
+def nFromLEpsilonDelta(L, epsilon, Delta):
+  """
+  Calculate number of cells along edge from length, expansion ratio and size
+  of first cell
+  """
+  return int(math.ceil((math.log((epsilon-1.0)*L/Delta+1.0)/math.log(epsilon))))
+  
+def nFromLEDelta(L, E, Delta):
+  """
+  Calculate number of cells along edge from length, ratio between first and
+  last cell and Size of first cell
+  """
+  epsilon = 0.0
+  n = int(math.ceil(L/Delta))
+  while n > 2 and epsilon < 1.0:
+    eps = math.pow(E,1.0/float(n-1))
+    length2=LFromNDeltaEpsilon(n,Delta,eps)
+    if(L > length2):
+      n=n+1
+      epsilon=math.pow(E,1.0/float(n-1))
+    else:
+      n=n-1
+  return int(n), epsilon
+
+def createBlockMesh(r, R, xmin, xmax, width, N, aspect, refineLevels, amplitude):
+    r05 = r * math.sqrt(0.5)
+    R05 = R * math.sqrt(0.5)
+
+    Nby4=int(N/4.0)
+
+    delta = 0.5*math.pi*R/Nby4
+
+    delta0 = 0.5*math.pi*r/Nby4/aspect
+
+    E = delta/delta0
+
+    Nr, epsilon = nFromLEDelta(R-r,E,delta0)
+
+    print("Resulting expansion ratio at cylinder: "+str(epsilon))
+
+    Nx = int((xmax-xmin)/delta/2.0**refineLevels)
+    Ny = int(width/delta/2.0**refineLevels)
+
+    blockMeshDict=open('system/blockMeshDict','w')
+    blockMeshDict.write('/*--------------------------------*- C++ -*----------------------------------*\\\n')
+    blockMeshDict.write('| =========                 |                                                 |\n')
+    blockMeshDict.write('| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |\n')
+    blockMeshDict.write('|  \\    /   O peration     | Version:  2.1.x                                 |\n')
+    blockMeshDict.write('|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |\n')
+    blockMeshDict.write('|    \\/     M anipulation  |                                                 |\n')
+    blockMeshDict.write('\\*---------------------------------------------------------------------------*/\n')
+    blockMeshDict.write('FoamFile\n')
+    blockMeshDict.write('{\n')
+    blockMeshDict.write('    version     2.0;\n')
+    blockMeshDict.write('    format      ascii;\n')
+    blockMeshDict.write('    class       dictionary;\n')
+    blockMeshDict.write('    object      blockMeshDict;\n')
+    blockMeshDict.write('}\n')
+    blockMeshDict.write('// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //\n')
+    blockMeshDict.write('\n')
+    blockMeshDict.write('convertToMeters 1;\n')
+    blockMeshDict.write('\n')
+    blockMeshDict.write('vertices\n')
+    blockMeshDict.write('(\n')
+    blockMeshDict.write('    ('+str(r05)+' '+str(r05)+' 0.0) // 0\n')
+    blockMeshDict.write('    ('+str(-r05)+' '+str(r05)+' 0.0) // 1\n')
+    blockMeshDict.write('    ('+str(-r05)+' '+str(-r05)+' 0.0) // 2\n')
+    blockMeshDict.write('    ('+str(r05)+' '+str(-r05)+' 0.0) // 3\n')
+    blockMeshDict.write('    ('+str(R05)+' '+str(R05)+' 0.0) // 4\n')
+    blockMeshDict.write('    ('+str(-R05)+' '+str(R05)+' 0.0) // 5\n')
+    blockMeshDict.write('    ('+str(-R05)+' '+str(-R05)+' 0.0) // 6\n')
+    blockMeshDict.write('    ('+str(R05)+' '+str(-R05)+' 0.0) // 7\n')
+    blockMeshDict.write('    ('+str(xmin)+' '+str(-0.5*width)+' 0.0) // 8\n')
+    blockMeshDict.write('    ('+str(xmax)+' '+str(-0.5*width)+' 0.0) // 9\n')
+    blockMeshDict.write('    ('+str(xmax)+' '+str(0.5*width)+' 0.0) //10\n')
+    blockMeshDict.write('    ('+str(xmin)+' '+str(0.5*width)+' 0.0) //11\n')
+    blockMeshDict.write('\n')
+    blockMeshDict.write('    ('+str(r05)+' '+str(r05)+' 0.01) //12\n')
+    blockMeshDict.write('    ('+str(-r05)+' '+str(r05)+' 0.01) //13\n')
+    blockMeshDict.write('    ('+str(-r05)+' '+str(-r05)+' 0.01) //14\n')
+    blockMeshDict.write('    ('+str(r05)+' '+str(-r05)+' 0.01) //15\n')
+    blockMeshDict.write('    ('+str(R05)+' '+str(R05)+' 0.01) //16\n')
+    blockMeshDict.write('    ('+str(-R05)+' '+str(R05)+' 0.01) //17\n')
+    blockMeshDict.write('    ('+str(-R05)+' '+str(-R05)+' 0.01) //18\n')
+    blockMeshDict.write('    ('+str(R05)+' '+str(-R05)+' 0.01) //19\n')
+    blockMeshDict.write('    ('+str(xmin)+' '+str(-0.5*width)+' 0.01) //20\n')
+    blockMeshDict.write('    ('+str(xmax)+' '+str(-0.5*width)+' 0.01) //21\n')
+    blockMeshDict.write('    ('+str(xmax)+' '+str(0.5*width)+' 0.01) //22\n')
+    blockMeshDict.write('    ('+str(xmin)+' '+str(0.5*width)+' 0.01) //23\n')
+    blockMeshDict.write(');\n')
+    blockMeshDict.write('\n')
+    blockMeshDict.write('blocks\n')
+    blockMeshDict.write('(\n')
+    blockMeshDict.write('    hex ( 0  4  5  1 12 16 17 13) inner ('+str(Nr)+' '+str(Nby4)+' 1) simpleGrading ('+str(E)+' 1 1)\n')
+    blockMeshDict.write('    hex ( 1  5  6  2 13 17 18 14) inner ('+str(Nr)+' '+str(Nby4)+' 1) simpleGrading ('+str(E)+' 1 1)\n')
+    blockMeshDict.write('    hex ( 2  6  7  3 14 18 19 15) inner ('+str(Nr)+' '+str(Nby4)+' 1) simpleGrading ('+str(E)+' 1 1)\n')
+    blockMeshDict.write('    hex ( 3  7  4  0 15 19 16 12) inner ('+str(Nr)+' '+str(Nby4)+' 1) simpleGrading ('+str(E)+' 1 1)\n')
+    blockMeshDict.write('\n')
+    blockMeshDict.write('    hex ( 8  9 10 11 20 21 22 23) outer ('+str(Nx)+' '+str(Ny)+' 1) simpleGrading (1 1 1)\n')
+    blockMeshDict.write(');\n')
+    blockMeshDict.write('\n')
+    blockMeshDict.write('edges\n')
+    blockMeshDict.write('(\n')
+    blockMeshDict.write('    arc  0  1 (0 '+str(r)+' 0)\n')
+    blockMeshDict.write('    arc  1  2 ('+str(-r)+' 0 0)\n')
+    blockMeshDict.write('    arc  2  3 (0 '+str(-r)+' 0)\n')
+    blockMeshDict.write('    arc  3  0 ('+str(r)+' 0 0)\n')
+    blockMeshDict.write('\n')
+    blockMeshDict.write('    arc  4  5 (0 '+str(R)+' 0)\n')
+    blockMeshDict.write('    arc  5  6 ('+str(-R)+' 0 0)\n')
+    blockMeshDict.write('    arc  6  7 (0 '+str(-R)+' 0)\n')
+    blockMeshDict.write('    arc  7  4 ('+str(R)+' 0 0)\n')
+    blockMeshDict.write('\n')
+    blockMeshDict.write('    arc 12 13 (0 '+str(r)+' 0.01)\n')
+    blockMeshDict.write('    arc 13 14 ('+str(-r)+' 0 0.01)\n')
+    blockMeshDict.write('    arc 14 15 (0 '+str(-r)+' 0.01)\n')
+    blockMeshDict.write('    arc 15 12 ('+str(r)+' 0 0.01)\n')
+    blockMeshDict.write('\n')
+    blockMeshDict.write('    arc 16 17 (0 '+str(R)+' 0.01)\n')
+    blockMeshDict.write('    arc 17 18 ('+str(-R)+' 0 0.01)\n')
+    blockMeshDict.write('    arc 18 19 (0 '+str(-R)+' 0.01)\n')
+    blockMeshDict.write('    arc 19 16 ('+str(R)+' 0 0.01)\n')
+    blockMeshDict.write(');\n')
+    blockMeshDict.write('\n')
+    blockMeshDict.write('boundary\n')
+    blockMeshDict.write('(\n')
+    blockMeshDict.write('    cylinder\n')
+    blockMeshDict.write('    {\n')
+    blockMeshDict.write('        type wall;\n')
+    blockMeshDict.write('        faces\n')
+    blockMeshDict.write('        (\n')
+    blockMeshDict.write('            ( 0 12 13  1)\n')
+    blockMeshDict.write('            ( 1 13 14  2)\n')
+    blockMeshDict.write('            ( 2 14 15  3)\n')
+    blockMeshDict.write('            ( 3 15 12  0)\n')
+    blockMeshDict.write('        );\n')
+    blockMeshDict.write('    }\n')
+    blockMeshDict.write('\n')
+    blockMeshDict.write('    inner\n')
+    blockMeshDict.write('    {\n')
+    blockMeshDict.write('        type bellerophon;\n')
+    blockMeshDict.write('        donorZone outer;\n')
+    blockMeshDict.write('        oversetZones (inner);\n')
+    blockMeshDict.write('        faces\n')
+    blockMeshDict.write('        (\n')
+    blockMeshDict.write('            ( 4  5 17 16)\n')
+    blockMeshDict.write('            ( 5  6 18 17)\n')
+    blockMeshDict.write('            ( 6  7 19 18)\n')
+    blockMeshDict.write('            ( 7  4 16 19)\n')
+    blockMeshDict.write('        );\n')
+    blockMeshDict.write('    }\n')
+    blockMeshDict.write('\n')
+    blockMeshDict.write('    inlet\n')
+    blockMeshDict.write('    {\n')
+    blockMeshDict.write('        type patch;\n')
+    blockMeshDict.write('        faces\n')
+    blockMeshDict.write('        (\n')
+    blockMeshDict.write('            ( 8 20 23 11)\n')
+    blockMeshDict.write('        );\n')
+    blockMeshDict.write('    }\n')
+    blockMeshDict.write('\n')
+    blockMeshDict.write('    outlet\n')
+    blockMeshDict.write('    {\n')
+    blockMeshDict.write('        type patch;\n')
+    blockMeshDict.write('        faces\n')
+    blockMeshDict.write('        (\n')
+    blockMeshDict.write('            ( 9 10 22 21)\n')
+    blockMeshDict.write('        );\n')
+    blockMeshDict.write('    }\n')
+    blockMeshDict.write('\n')
+    blockMeshDict.write('    sides\n')
+    blockMeshDict.write('    {\n')
+    blockMeshDict.write('        type patch;\n')
+    blockMeshDict.write('        faces\n')
+    blockMeshDict.write('        (\n')
+    blockMeshDict.write('            (10 11 23 22)\n')
+    blockMeshDict.write('            ( 8  9 21 20)\n')
+    blockMeshDict.write('        );\n')
+    blockMeshDict.write('    }\n')
+    blockMeshDict.write('\n')
+    blockMeshDict.write('    frontAndBack\n')
+    blockMeshDict.write('    {\n')
+    blockMeshDict.write('        type empty;\n')
+    blockMeshDict.write('        faces\n')
+    blockMeshDict.write('        (\n')
+    blockMeshDict.write('            ( 0  1  5  4)\n')
+    blockMeshDict.write('            ( 1  2  6  5)\n')
+    blockMeshDict.write('            ( 2  3  7  6)\n')
+    blockMeshDict.write('            ( 3  0  4  7)\n')
+    blockMeshDict.write('\n')
+    blockMeshDict.write('            (16 17 13 12)\n')
+    blockMeshDict.write('            (17 18 14 13)\n')
+    blockMeshDict.write('            (18 19 15 14)\n')
+    blockMeshDict.write('            (19 16 12 15)\n')
+    blockMeshDict.write('\n')
+    blockMeshDict.write('            ( 8  9 10 11)\n')
+    blockMeshDict.write('            (23 22 21 20)\n')
+    blockMeshDict.write('        );\n')
+    blockMeshDict.write('    }\n')
+    blockMeshDict.write(');\n')
+    blockMeshDict.write('\n')
+    blockMeshDict.write('mergePatchPairs\n')
+    blockMeshDict.write('(\n')
+    blockMeshDict.write(');\n')
+    blockMeshDict.write('\n')
+    blockMeshDict.write('// ************************************************************************* //\n')
+    blockMeshDict.close()
+
+    os.system("blockMesh > log.blockMesh 2>&1")
+
+    levelDelta = delta
+    absAmplitude = np.abs(np.array(amplitude))
+    innerMax = np.array([R]*3) + absAmplitude
+    innerMin = np.array([-R]*3) - absAmplitude
+    levels = list(range(refineLevels))
+
+    topoSetDict = open("system/topoSetDict", 'w')
+    topoSetDict.write("/*--------------------------------*- C++ -*----------------------------------*\\\n")
+    topoSetDict.write("| =========                 |                                                 |\n")
+    topoSetDict.write("| \\\\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |\n")
+    topoSetDict.write("|  \\\\    /   O peration     | Version:  dev                                   |\n")
+    topoSetDict.write("|   \\\\  /    A nd           | Web:      www.OpenFOAM.org                      |\n")
+    topoSetDict.write("|    \\\\/     M anipulation  |                                                 |\n")
+    topoSetDict.write("\\*---------------------------------------------------------------------------*/\n")
+    topoSetDict.write("FoamFile\n")
+    topoSetDict.write("{\n")
+    topoSetDict.write("    version     2.0;\n")
+    topoSetDict.write("    format      ascii;\n")
+    topoSetDict.write("    class       dictionary;\n")
+    topoSetDict.write("    object      topoSetDict;\n")
+    topoSetDict.write("}\n")
+    topoSetDict.write("// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //\n")
+    topoSetDict.write("\n")
+    topoSetDict.write("actions\n")
+    topoSetDict.write("(\n")
+    for level in levels:
+        levelOffset = np.array([levelDelta*8.0]*3)
+        innerMax = innerMax + levelOffset
+        innerMin = innerMin - levelOffset
+
+        topoSetDict.write("    {\n")
+        topoSetDict.write("        name    refineCells_"+str(level)+";\n")
+        topoSetDict.write("        type    cellSet;\n")
+        topoSetDict.write("        action  new;\n")
+        topoSetDict.write("        source  boxToCell;\n")
+        topoSetDict.write("        sourceInfo\n")
+        topoSetDict.write("        {\n")
+        topoSetDict.write("            box     ("+str(innerMin[0])+" "+str(innerMin[1])+" "+str(innerMin[2])+") ("+str(innerMax[0])+" "+str(innerMax[1])+" "+str(innerMax[2])+");\n")
+        topoSetDict.write("        }\n")
+        topoSetDict.write("    }\n")
+        topoSetDict.write("    {\n")
+        topoSetDict.write("        name    refineCells_"+str(level)+";\n")
+        topoSetDict.write("        type    cellSet;\n")
+        topoSetDict.write("        action  delete;")
+        topoSetDict.write("        source  zoneToCell;\n")
+        topoSetDict.write("        sourceInfo\n")
+        topoSetDict.write("        {\n")
+        topoSetDict.write("            name inner;\n")
+        topoSetDict.write("        }\n")
+        topoSetDict.write("    }\n")
+        levelDelta *= 2.0
+    topoSetDict.write(");\n")
+    topoSetDict.write("\n")
+    topoSetDict.write("// ************************************************************************* //\n")
+    topoSetDict.write("\n")
+    topoSetDict.close()
+
+    for level in levels[::-1]:
+        refineMeshDict = open("system/refineMeshDict", 'w')
+        refineMeshDict.write("/*--------------------------------*- C++ -*----------------------------------*\\\n")
+        refineMeshDict.write("| =========                 |                                                 |\n")
+        refineMeshDict.write("| \\\\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |\n")
+        refineMeshDict.write("|  \\\\    /   O peration     | Version:  dev                                   |\n")
+        refineMeshDict.write("|   \\\\  /    A nd           | Web:      www.OpenFOAM.org                      |\n")
+        refineMeshDict.write("|    \\\\/     M anipulation  |                                                 |\n")
+        refineMeshDict.write("\\*---------------------------------------------------------------------------*/\n")
+        refineMeshDict.write("FoamFile\n")
+        refineMeshDict.write("{\n")
+        refineMeshDict.write("    version     2.0;\n")
+        refineMeshDict.write("    format      ascii;\n")
+        refineMeshDict.write("    class       dictionary;\n")
+        refineMeshDict.write("    object      refineMeshDict;\n")
+        refineMeshDict.write("}\n")
+        refineMeshDict.write("\n")
+        refineMeshDict.write("// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //\n")
+        refineMeshDict.write("\n")
+        refineMeshDict.write("set refineCells_"+str(level)+";\n")
+        refineMeshDict.write("\n")
+        refineMeshDict.write("coordinateSystem global;\n")
+        refineMeshDict.write("\n")
+        refineMeshDict.write("globalCoeffs\n")
+        refineMeshDict.write("{\n")
+        refineMeshDict.write("    tan1 (1 0 0);\n")
+        refineMeshDict.write("    tan2 (0 1 0);\n")
+        refineMeshDict.write("}\n")
+        refineMeshDict.write("\n")
+        refineMeshDict.write("directions\n")
+        refineMeshDict.write("(\n")
+        refineMeshDict.write("    tan1\n")
+        refineMeshDict.write("    tan2\n")
+        refineMeshDict.write(");\n")
+        refineMeshDict.write("\n")
+        refineMeshDict.write("useHexTopology  true;\n")
+        refineMeshDict.write("\n")
+        refineMeshDict.write("geometricCut    false;\n")
+        refineMeshDict.write("\n")
+        refineMeshDict.write("writeMesh       false;\n")
+        refineMeshDict.write("\n")
+        refineMeshDict.write("// ************************************************************************* //\n")
+        refineMeshDict.write("\n")
+        refineMeshDict.close()
+
+        os.system("topoSet > log.topoSet."+str(level)+" 2>&1")
+        os.system("refineMesh -overwrite -dict system/refineMeshDict > log.refineMesh."+str(level)+" 2>&1")
+        os.system("rm -rf constant/polyMesh/sets")
+
+#    os.system("rm -f system/blockMeshDict system/topoSetDict system/refineMeshDict") 
+        
+
+
+def createDynamicMeshDict(amplitude, omega):
+    dynamicMeshDict=open('constant/dynamicMeshDict', 'w')
+    dynamicMeshDict.write('/*--------------------------------*- C++ -*----------------------------------*\\\n')
+    dynamicMeshDict.write('| =========                 |                                                 |\n')
+    dynamicMeshDict.write('| \\\\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |\n')
+    dynamicMeshDict.write('|  \\\\    /   O peration     | Version:  2.3.x                                 |\n')
+    dynamicMeshDict.write('|   \\\\  /    A nd           | Web:      www.OpenFOAM.org                      |\n')
+    dynamicMeshDict.write('|    \\\\/     M anipulation  |                                                 |\n')
+    dynamicMeshDict.write('\\*---------------------------------------------------------------------------*/\n')
+    dynamicMeshDict.write('FoamFile\n')
+    dynamicMeshDict.write('{\n')
+    dynamicMeshDict.write('    version     2.0;\n')
+    dynamicMeshDict.write('    format      ascii;\n')
+    dynamicMeshDict.write('    class       dictionary;\n')
+    dynamicMeshDict.write('    location    "constant";\n')
+    dynamicMeshDict.write('    object      dynamicMeshDict;\n')
+    dynamicMeshDict.write('}\n')
+    dynamicMeshDict.write('// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //\n')
+    dynamicMeshDict.write('\n')
+    dynamicMeshDict.write('dynamicFvMesh   solidOversetMotionFvMesh;\n')
+    dynamicMeshDict.write('\n')
+    dynamicMeshDict.write('solidOversetMotionFvMeshCoeffs\n')
+    dynamicMeshDict.write('{\n')
+    dynamicMeshDict.write('    oversetPatch    inner;\n')
+    dynamicMeshDict.write('\n')
+    dynamicMeshDict.write('    checkLiveCells  true;\n')
+    dynamicMeshDict.write('    interpolateLiveCells  true;\n')
+    dynamicMeshDict.write('\n')
+    dynamicMeshDict.write('    solidBodyMotionFunction oscillatingLinearMotion;\n')
+    dynamicMeshDict.write('    oscillatingLinearMotionCoeffs\n')
+    dynamicMeshDict.write('    {\n')
+    dynamicMeshDict.write('        amplitude   ('+str(amplitude[0])+' '+str(amplitude[1])+' '+str(amplitude[2])+');\n')
+    dynamicMeshDict.write('        omega       '+str(omega)+';\n')
+    dynamicMeshDict.write('    }\n')
+    dynamicMeshDict.write('}\n')
+    dynamicMeshDict.write('\n')
+    dynamicMeshDict.write('// ************************************************************************* //\n')
+    dynamicMeshDict.close()
+
+r     = 0.5
+R     = 1.0
+N     = 300
+aspect= 1.0
+
+xmin  =-3.0
+xmax  = 6.0
+width = 6.0
+
+refineLevels = 2
+
+amplitude = [0.0, 1.0, 0.0]
+period = 1.0
+
+omega = 2.0*math.pi / period
+
+createBlockMesh(r, R, xmin, xmax, width, N, aspect, refineLevels, amplitude)
+createDynamicMeshDict(amplitude, omega)

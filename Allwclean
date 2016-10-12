@@ -1,0 +1,5 @@
+#!/bin/bash
+
+wclean
+
+cd tutorials/applications && wclean all

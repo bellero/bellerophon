@@ -1,0 +1,46 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.1.x                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      binary;
+    class       surfaceScalarField;
+    location    "0";
+    object      phi;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 3 -1 0 0 0 0];
+
+internalField   uniform 0;
+
+boundaryField
+{
+    "inlet|outlet|fixedWalls"
+    {
+        type            calculated;
+        value           uniform 0;
+    }
+
+    upstream
+    {
+        type            bellerophon;
+        massFlux        0.06675;
+        value           uniform 0;
+    }
+
+    downstream
+    {
+        type            bellerophon;
+        massFlux        -0.06675;
+        value           uniform 0;
+    }
+}
+
+
+// ************************************************************************* //

@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# Source tutorial run functions
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+if [ ! -e 3d_transient/constant/polyMesh/owner.gz ]; then
+    ./mesh3Dcoarse
+fi
+
+(
+    cd 2d_steady
+    rm -rf 0 > /dev/null 2>&1
+    mkdir 0 > /dev/null 2>&1
+
+    runApplication extrudeMesh
+
+    sed -i "s/cyclic/empty/" constant/polyMesh/boundary
+
+    runApplication createPatch -overwrite
+
+    rm -rf 0 > /dev/null 2>&1 
+    cp -r 0.org 0 > /dev/null 2>&1
+    
+    runApplication bellerophonWallDist
+
+    runApplication decomposePar
+    runParallel simpleFoam 4
+    runApplication reconstructPar -latestTime
+)
+
+(
+    cd 2d_transient
+    cp -r ../2d_steady/constant/polyMesh constant
+    cp -r ../2d_steady/2000 0
+    rm -rf 0/uniform
+
+    runApplication decomposePar
+    runParallel pimpleFoam 4
+    runApplication reconstructPar
+)
+

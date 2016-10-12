@@ -1,0 +1,78 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.3.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      sampleDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Set output format : choice of
+//      xmgr
+//      jplot
+//      gnuplot
+//      raw
+//      vtk
+//      ensight
+//      csv
+setFormat raw;
+
+surfaceFormat vtk;
+
+formatOptions
+{
+    ensight
+    {
+        format  ascii;
+    }
+}
+
+interpolationScheme cellPoint;
+
+fields
+(
+);
+
+sets
+(
+);
+
+
+surfaces
+(
+    freeSurface
+    {
+        // Iso surface for interpolated values only
+        type            isoSurface;    // always triangulated
+        isoField        alpha.water;
+        isoValue        0.5;
+        interpolate     true;
+
+        regularise      true;     // Optional: do not simplify
+        mergeTol        1e-99;    // Optional: fraction of mesh bounding box
+                                     // to merge points (default=1e-6)
+    }
+
+    freeSurfaceMean
+    {
+        // Iso surface for interpolated values only
+        type            isoSurface;    // always triangulated
+        isoField        alpha.waterMean;
+        isoValue        0.5;
+        interpolate     true;
+
+        regularise      true;     // Optional: do not simplify
+        mergeTol        1e-99;    // Optional: fraction of mesh bounding box
+                                     // to merge points (default=1e-6)
+    }
+);
+
+
+// *********************************************************************** //

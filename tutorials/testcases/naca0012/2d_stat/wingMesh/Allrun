@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Source tutorial run functions
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+
+runApplication fluent3DMeshToFoam naca0012.msh
+rm -rf constant/polyMesh/sets constant/polyMesh/*Zones
+runApplication createPatch -overwrite
+runApplication flattenMesh
+runApplication setSet -batch setSetBatch
+rm -rf constant/polyMesh/sets
+runApplication surfaceMeshTriangulate -patches "(inner)" inner.stl

@@ -1,0 +1,63 @@
+#!/bin/bash
+
+# Source tutorial run functions
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+python3 createCylinderOversetMultiPhase.py
+
+(
+    cd 3d
+    rm -rf 0 > /dev/null 2>&1
+    mkdir 0
+
+    runApplication blockMesh
+
+    cp system/extrudeMeshDict.top system/extrudeMeshDict
+    runApplication extrudeMesh
+    mv log.extrudeMesh log.extrudeMesh.top
+
+    cp system/extrudeMeshDict.bottom system/extrudeMeshDict
+    runApplication extrudeMesh
+    mv log.extrudeMesh log.extrudeMesh.bottom
+
+    runApplication topoSet
+    runApplication holeCutter
+    runApplication subsetMesh liveCells -overwrite
+    runApplication createPatch -overwrite
+)
+
+(
+    cd 2d
+    runApplication extrudeMesh
+    runApplication changeDictionary
+    rm -rf 0 > /dev/null 2>&1
+    cp -r 0.org 0 > /dev/null 2>&1
+    exit
+    runApplication bellerophonWallDist
+    runApplication interFoam
+    runApplication decomposePar -latestTime
+)
+exit
+(
+    cd 3d
+    rm -rf 0 > /dev/null 2>&1
+    cp -r 0.org 0 > /dev/null 2>&1
+
+    cp system/decomposeParDict.6 system/decomposeParDict
+    runApplication decomposePar
+    mv log.decomposePar log.decomposePar.6
+    runParallel fastMapFields 6 ../2d -sourceTime latestTime
+    runApplication reconstructPar -zeroTime
+
+    rm -f 0/y* 0/alpha.water*
+    cp 0.org/y 0.org/alpha.water 0
+
+    runApplication setFields
+    runApplication bellerophonWallDist
+
+    cp system/decomposeParDict.32 system/decomposeParDict
+    runApplication decomposePar
+    mv log.decomposePar log.decomposePar.32
+
+    mpirun interFoam -parallel
+)

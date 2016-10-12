@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# Source tutorial run functions
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+
+./Allrun.3Dcoarse
+
+./Allrun.2D
+
+(
+    cd 3d_transient_coarse
+    rm -rf 0 > /dev/null 2>&1
+    cp -r 0.org 0 > /dev/null 2>&1
+
+    cp system/decomposePar.4 system/decomposePar
+
+    runApplication decomposePar
+    runParallel fastMapFields 4 ../2d_transient -sourceTime latestTime -fields (p U)
+    runApplication reconstructPar -zeroTime 
+
+    cp system/decomposePar.48 system/decomposePar
+    runApplication decomposePar -force
+
+    runParallel pimpleFoam 48
+)
+

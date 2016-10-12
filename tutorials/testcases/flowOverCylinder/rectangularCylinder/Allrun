@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Source tutorial run functions
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+
+(
+    cd single
+    runApplication blockMesh
+    runApplication commentedPimpleDyMFoam
+)
+
+(
+    cd overset
+    runApplication blockMesh
+    runApplication commentedPimpleDyMFoam
+)

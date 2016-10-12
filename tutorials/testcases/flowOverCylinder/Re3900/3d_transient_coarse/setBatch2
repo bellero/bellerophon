@@ -1,0 +1,4 @@
+cellSet refine new boxToCell (0 -2.7 0) (27 2.7 4)
+cellSet refine add cylinderToCell (0 0 0) (0 0 4) 2.7
+cellSet refine delete zoneToCell inner
+quit

@@ -1,0 +1,64 @@
+\documentclass[a4paper,10pt]{scrartcl}
+\usepackage[utf8]{inputenc}
+
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage[margin=15mm]{geometry}
+
+\footskip=20pt
+
+
+%opening
+\title{Validation of Bellerophon NACA 0012 wing in 2D flow}
+\author{Andreas Groß}
+
+\begin{document}
+
+\maketitle
+
+\section{Case Description}
+This test case compares the results for a steady turbulent flow over a NACA 0012
+profile at a range of angles of attack. 
+
+The Reynolds number of this test case is \(2.88\times10^6\). For turbulence modeling
+the \(k\text{-}\epsilon\)-model is used\cite{kEps}. Different mesh sizes are used for
+validation of the methods used. \textbf{TODO}
+
+Results are compared against the validation results provided by Ladson\cite{Ladson1}, Ladson et al.\cite{Ladson2} and
+Gregory et al.\cite{Gregory}.
+
+\section{Results}
+
+The lift coefficient for angles of attack between \(0^\circ\) and \(20^\circ\) are
+shown in Figure~\ref{Lift}. There is a good agreement for lift at low and moderate angles
+of attack. For high angles of attack, the calculation predict a lower lift then the experiments.
+The calculated drag is shown in Figure~\ref{Lift} and is higher then the drag measured.
+\begin{figure}[!htbp]
+  \centering
+  \resizebox{0.49\columnwidth}{!}{\input{../results/CLoverAlpha.tex}}
+  \resizebox{0.49\columnwidth}{!}{\input{../results/CDoverCL.tex}}
+  \caption{Lift coefficient over \(\alpha\) (left) and Drag vs. Lift (right)}
+  \label{Lift}
+\end{figure}
+
+A comparison of the pressure distribution at angles of attack of \(0^\circ\) and \(10^\circ\) is
+shown in Figures~\ref{CP}. The results for \(0^\circ\) show good agreement with the experimental
+results. For \(10^\circ\) the experimental results differ in the pressure peak at the upper
+surface\cite{Gregory}\cite{Ladson2}. The results by Gergory et al. seem to resolve this peak
+better as they might be considered to be more two dimensional. The calculations show good agreement
+with these data.
+
+\begin{figure}[!htbp]
+  \centering
+  \resizebox{0.49\columnwidth}{!}{\input{../results/pressure_0deg.tex}}
+  \resizebox{0.49\columnwidth}{!}{\input{../results/pressure_10deg.tex}} \\
+  \resizebox{0.49\columnwidth}{!}{\input{../results/pressure_15deg.tex}} \\
+  \caption{Pressure distribution at \(0^\circ\) (left) and \(10^\circ\) (right)}
+  \label{CP}
+\end{figure}
+
+\bibliography{validation}
+\bibliographystyle{unsrt}
+
+\end{document}

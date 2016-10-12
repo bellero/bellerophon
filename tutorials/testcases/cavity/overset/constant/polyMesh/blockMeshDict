@@ -1,0 +1,107 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.1.1                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      blockMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+convertToMeters 0.1;
+
+vertices
+(
+    (0 0       0  )
+    (1 0       0  )
+    (1 0.53731 0  )
+    (0 0.53731 0  )
+    (0 0       0.1)
+    (1 0       0.1)
+    (1 0.53731 0.1)
+    (0 0.53731 0.1)
+
+    (0 0.46269 0.001)
+    (1 0.46269 0.001)
+    (1 1       0.001)
+    (0 1       0.001)
+    (0 0.46269 0.101)
+    (1 0.46269 0.101)
+    (1 1       0.101)
+    (0 1       0.101)
+);
+
+blocks
+(
+    hex (0 1 2 3 4 5 6 7) lower (30 18 1) simpleGrading (1 1 1)
+    hex (8 9 10 11 12 13 14 15) upper (30 18 1) simpleGrading (1 1 1)
+);
+
+edges
+(
+);
+
+boundary
+(
+    movingWall 
+    {
+        type wall;
+        faces
+        (
+            (11 15 14 10)
+        );
+    }
+    fixedWalls
+    {
+        type wall;
+        faces
+        (
+            (1 5 4 0)
+            (0 4 7 3)
+            (8 12 15 11)
+            (2 6 5 1)
+            (10 14 13 9)
+        );
+    }
+    frontAndBack
+    {
+        type empty;
+        faces
+        (
+            (0 3 2 1)
+            (4 5 6 7)
+            (8 11 10 9)
+            (12 13 14 15)
+        );
+    }
+    lowerBellerophon
+    {
+        type bellerophon;
+        donorZone upper;
+        faces
+        (
+            (3 7 6 2)
+        );
+    }
+    upperBellerophon
+    {
+        type bellerophon;
+        donorZone lower;
+        faces
+        (
+            (9 13 12 8)
+        );
+    }
+);
+
+mergePatchPairs
+(
+);
+
+// ************************************************************************* //

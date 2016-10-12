@@ -1,0 +1,3 @@
+cellSet refine new cylinderToCell (0 0 0) (0 0 4) 2.0
+cellSet refine delete zoneToCell inner
+quit

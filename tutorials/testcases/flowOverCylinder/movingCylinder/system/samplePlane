@@ -1,0 +1,24 @@
+surfaces
+{
+    type            surfaces;
+    functionObjectLibs ("libsampling.so");
+    outputControl   outputTime;
+
+    surfaceFormat   vtk;
+    fields          (p U); 
+
+    interpolationScheme cellPoint;
+
+    surfaces
+    (   
+        z0005
+        {   
+            type            plane;
+            basePoint       (0 0 0.005); 
+            normalVector    (0 0 1); 
+            interpolate     true;
+            triangulate     true;
+        }   
+    );  
+}
+

@@ -1,0 +1,4 @@
+cellZoneSet outer remove
+cellSet outer new zoneToCell inner
+cellSet outer invert
+cellZoneSet outer new setToCellZone outer

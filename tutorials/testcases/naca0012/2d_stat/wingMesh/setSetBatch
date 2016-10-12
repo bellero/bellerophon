@@ -1,0 +1,7 @@
+cellSet oversetCells new
+cellSet oversetCells invert
+cellSet backgroundCells new
+cellZoneSet oversetZone new setToCellZone oversetCells
+cellZoneSet backgroundZone new setToCellZone backgroundCells
+
+quit

@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Source tutorial run functions
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+mkdir 0 > /dev/null 2>&1
+
+runApplication blockMesh
+runApplication topoSet -dict system/topoSetDict.1
+runApplication subsetMesh fluidSource -overwrite
+runApplication createPatch -overwrite -dict system/createPatchDict.1
+rm -rf constant/polyMesh/sets
+mv log.topoSet log.topoSet.1
+runApplication topoSet -dict system/topoSetDict.1
+runApplication holeCutter
+mv log.subsetMesh log.subsetMesh.1
+runApplication subsetMesh liveCells -overwrite
+mv log.createPatch log.createPatch.1
+runApplication createPatch -overwrite -dict system/createPatchDict.2
+
+rm -rf 0
+cp -r 0.org 0
+
+runApplication setFields
+runApplication interFoam

@@ -1,0 +1,105 @@
+\documentclass[a4paper,10pt]{scrartcl}
+\usepackage[utf8]{inputenc}
+
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage[margin=15mm]{geometry}
+
+
+%opening
+\title{Validation of Bellerophon for Transient Cylinder Flow}
+\author{Andreas Groß}
+
+\begin{document}
+
+\maketitle
+
+\section{Case Description}
+This testcase compares the results for a transient two dimensional flow around
+a round cylinder with \(Re=10^5\). The diameter of the cylinder is
+\(D=1\ \text m\) and the inlet velocity is set to
+\(U=1\frac{\text m}{\text s}.\). The Strouhal number for this case should be
+around 0.19.
+
+The flow is considered as laminar, which might not be suitable for a correct
+representation of the physical problem. This testcase however only compares the
+results of the overset grid with a single grid and therefore is still
+usable.
+
+The distance of the boundaries from the cylinder is given in
+Table~\ref{domain}. The results for both cases are compared after 100 seconds
+(\(\sim\) 20 oscilations) for another 100 seconds.
+
+\begin{table}[!htbp]
+ \caption{Dimensions of the Domain}
+ \centering
+ \begin{tabular}{lc}
+  \toprule
+  Direction & Dimension \\
+  \midrule
+  Upstream & 20 m\\
+  Sides & 20 m\\
+  Downstream & 20 m\\
+  Diameter of overset region & 12 m \\
+  Diameter of hole in background mesh & 9.2 m \\
+  \bottomrule
+  \label{domain}
+ \end{tabular}
+\end{table}
+
+
+\section{Results}
+
+The time resolved results for drag and lift of the cylinder are shown in
+Figure~\ref{cd_timedomain}~and~\ref{cl_timedomain}. The time averaged values
+are summarized in Table \ref{results}. There is a good agreement of the time
+averaged values of drag and lift coefficient. The standard deviations of the
+values is below 0.5 \% showing good agreement of the oscilation amplitudes of
+both drag and lift. The averaged lift should be zero. Both results show lift
+close to zero with small deviations. Due to the small magnitude of the value,
+the relative difference is high and should be neglected.
+
+%\begin{figure}[!htbp]
+%  \centering
+%  \input{../results/cd_timedomain.tex}
+%  \caption{Spectrum of Drag Coefficient}
+%  \label{cd_timedomain}
+%\end{figure}
+
+%\begin{figure}[!htbp]
+%  \centering
+%  \input{../results/cl_timedomain.tex}
+%  \caption{Spectrum of Lift Coefficient}
+%  \label{cl_timedomain}
+%\end{figure}
+
+%\begin{table}[!htbp]
+% \caption{Results for Lift and Drag}
+% \centering
+% \input{../results/coeffs.tex}
+% \label{results}
+%\end{table}
+
+The results for lift and drag in frequency domain are shown in
+Figure~\ref{cd_timedomain}~and~\ref{cl_spectra}. The shedding frequency of the
+vortex street shows good agreement for the overset and the single grid. The
+comparison to the experimental values for this case is bad. This may be
+improved by a increased mesh resolution or a suitable turbulence model.
+
+\begin{figure}[!htbp]
+  \centering
+  \input{../results/cl_spectra.tex}
+  \caption{Spectrum of Drag Coefficient}
+  \label{cd_spectra}
+\end{figure}
+
+\begin{figure}[!htbp]
+  \centering
+  \input{../results/foo.tex}
+  \caption{Types}
+  \label{cl_spectra}
+\end{figure}
+
+
+\end{document}

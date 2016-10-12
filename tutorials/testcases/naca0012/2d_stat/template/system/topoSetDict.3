@@ -1,0 +1,43 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.3.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      topoSetDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+actions
+(
+    {
+        name    holeSource;
+        type    cellSet;
+        action  new;
+        source surfaceToCell;
+        sourceInfo
+        {
+            file            "inner.stl";
+            useSurfaceOrientation true;     // use closed surface inside/outside
+                                            // test (ignores includeCut,
+                                            // outsidePoints)
+            outsidePoints   ((-99 -99 0.5));    // definition of outside
+            includeCut      false;              // cells cut by surface
+            includeInside   true;               // cells not on outside of surf
+            includeOutside  false;              // cells on outside of surf
+            nearDistance    -1;                 // cells with centre near surf
+                                                // (set to -1 if not used)
+            curvature       -100;               // cells within nearDistance
+                                                // and near surf curvature
+                                                // (set to -100 if not used)
+        }
+    }
+);
+
+// ************************************************************************* //

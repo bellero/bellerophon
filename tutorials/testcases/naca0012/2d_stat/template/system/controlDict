@@ -1,0 +1,82 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.1.x                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     simpleDyFoam;
+
+startFrom       startTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         20000;
+
+deltaT          1;
+
+writeControl    timeStep;
+
+writeInterval   100;
+
+purgeWrite      3;
+
+writeFormat     binary;
+
+writePrecision  12;
+
+writeCompression on;
+
+timeFormat      general;
+
+timePrecision   6;
+
+graphFormat     raw;
+
+runTimeModifiable true;
+
+libs ("libBellerophon.so");
+
+functions
+{
+    forces
+    {
+        type            forceCoeffs;
+        functionObjectLibs ( "libforces.so" );
+        outputControl   timeStep;
+        outputInterval  1;
+
+        patches
+        (
+            wing
+        );
+
+        pName       p;
+        UName       U;
+        rhoName     rhoInf;
+        log         true;
+        rhoInf      1.0;
+        CofR        ( 0 0 0 );
+        liftDir     ( -EY EX 0 );
+        dragDir     ( EX EY 0 );
+        pitchAxis   ( 0 0 1 );
+        magUInf     60.0;
+        lRef        1;
+        Aref        1;
+    }
+    #include "sysCall"
+}
+
+// ************************************************************************* //

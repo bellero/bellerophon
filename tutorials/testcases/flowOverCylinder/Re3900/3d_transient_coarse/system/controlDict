@@ -1,0 +1,88 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.1.x                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     commentedSimpleFoam;
+
+//startFrom       latestTime;
+startFrom       startTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         2.5e-03;
+
+deltaT          2.5e-04;
+
+writeControl    adjustableRunTime;
+
+writeInterval   $deltaT;
+
+purgeWrite      20;
+
+writeFormat     ascii;
+
+writePrecision  8;
+
+writeCompression on;
+
+timeFormat      general;
+
+timePrecision   6;
+
+graphFormat     raw;
+
+runTimeModifiable true;
+
+libs ("libBellerophon.so");
+
+iDebugSwitches
+{
+    gradientSearch 2;
+    bellerophonPBiCG 2;
+}
+
+functions
+{
+    forces
+    {
+        type            forceCoeffs;
+        functionObjectLibs ( "libforces.so" );
+        outputControl   timeStep;
+        outputInterval  1;
+
+        patches
+        (
+            cylinder
+        );
+
+        pName       p;
+        UName       U;
+        rhoName     rhoInf;
+        log         true;
+        rhoInf      1;
+        CofR        ( 0 0 0 );
+        liftDir     ( 0 1 0 );
+        dragDir     ( 1 0 0 );
+        pitchAxis   ( 0 0 1 );
+        magUInf     3.9;
+        lRef        1;
+        Aref        3.1415;
+    }
+}
+
+// ************************************************************************* //

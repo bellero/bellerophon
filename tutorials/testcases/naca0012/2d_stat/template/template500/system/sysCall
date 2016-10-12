@@ -1,0 +1,10 @@
+sysCall
+{
+    type systemCall;
+    functionObjectLibs ( "libsystemCall.so" );
+    executeCalls 0();
+    endCalls 0();
+    writeCalls 1("echo sysCal 1000; cp -r template1000/* .; touch system/controlDict");
+    outputControl timeStep;
+    outputInterval  500;
+}

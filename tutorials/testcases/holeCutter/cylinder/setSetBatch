@@ -1,0 +1,6 @@
+cellSet outer delete cylinderToCell (0 0 -1) (0 0 1) 4.6
+cellSet liveCells new cellToCell outer
+cellSet liveCells add cellToCell inner
+cellSet deadCells new cellToCell liveCells
+cellSet deadCells invert
+quit

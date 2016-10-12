@@ -1,0 +1,66 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.1.x                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     pimpleFoam;
+
+startFrom       latestTime;startTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         5;
+
+deltaT          5.0e-05;
+
+writeControl    adjustableRunTime;
+
+writeInterval   0.02;
+
+//writeControl    timeStep;
+//writeInterval   1;
+
+purgeWrite      20;
+
+writeFormat     ascii;
+
+writePrecision  6;
+
+writeCompression on;
+
+timeFormat      general;
+
+timePrecision   9;
+
+graphFormat     raw;
+
+runTimeModifiable true;
+
+maxCo           0.8;
+
+adjustTimeStep  1;
+
+libs ("libBellerophon.so");
+
+functions
+{
+    #include "forces"
+    #include "samplePlane"
+    #include "yWall"
+}
+
+// ************************************************************************* //

@@ -1,0 +1,79 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.3.x                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      binary;
+    class       polyBoundaryMesh;
+    location    "constant/polyMesh";
+    object      boundary;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+8
+(
+    cylinder
+    {
+        type            wall;
+        inGroups        1(wall);
+        nFaces          28200;
+        startFace       9318690;
+    }
+    inner
+    {
+        type            bellerophon;
+        inGroups        1(bellerophon);
+        nFaces          28200;
+        startFace       9346890;
+        matchTolerance  0.0001;
+        transform       unknown;
+        donorZone       outer;
+    }
+    inlet
+    {
+        type            patch;
+        nFaces          18471;
+        startFace       9375090;
+    }
+    outlet
+    {
+        type            patch;
+        nFaces          18471;
+        startFace       9393561;
+    }
+    sides
+    {
+        type            patch;
+        nFaces          39762;
+        startFace       9412032;
+    }
+    top
+    {
+        type            patch;
+        nFaces          22278;
+        startFace       9451794;
+    }
+    bottom
+    {
+        type            patch;
+        nFaces          22278;
+        startFace       9474072;
+    }
+    outer
+    {
+        type            bellerophon;
+        inGroups        1(bellerophon);
+        nFaces          32148;
+        startFace       9496350;
+        matchTolerance  0.0001;
+        transform       unknown;
+        donorZone       inner;
+    }
+)
+
+// ************************************************************************* //

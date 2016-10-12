@@ -1,0 +1,49 @@
+#!/bin/bash
+
+# Store directory
+curDir=`pwd`
+
+# Navigate to scripts home
+cd `dirname $0`
+
+./postprocessing.py
+
+cp sampleDict ../../overset/system
+cp sampleDict ../../single/system
+cp ../results/probeLocations ../../overset/system
+cp ../results/probeLocations ../../single/system
+
+(
+    cd ../../overset
+    sample -latestTime > log.sample
+)
+
+(
+    cd ../../single
+    sample -latestTime > log.sample
+)
+awk '1;!(NR%30){print "";}' ../../overset/postProcessing/sets/5000/somePoints_U.xy > ../results/overset_U.dat
+awk '1;!(NR%30){print "";}' ../../overset/postProcessing/sets/5000/somePoints_p.xy > ../results/overset_p.dat
+awk '1;!(NR%30){print "";}' ../../single/postProcessing/sets/5000/somePoints_U.xy > ../results/single_U.dat
+awk '1;!(NR%30){print "";}' ../../single/postProcessing/sets/5000/somePoints_p.xy > ../results/single_p.dat
+
+grep "Solving for p" ../../overset/log.simpleDyMFoam | cut -d" " -f9 | tr -d "," > ../results/overset_pResiduals.dat
+grep "Solving for Ux" ../../overset/log.simpleDyMFoam | cut -d" " -f9 | tr -d "," > ../results/overset_UxResiduals.dat
+grep "Solving for Uy" ../../overset/log.simpleDyMFoam | cut -d" " -f9 | tr -d "," > ../results/overset_UyResiduals.dat
+
+grep "Solving for p" ../../single/log.simpleFoam | cut -d" " -f9 | tr -d "," > ../results/single_pResiduals.dat
+grep "Solving for Ux" ../../single/log.simpleFoam | cut -d" " -f9 | tr -d "," > ../results/single_UxResiduals.dat
+grep "Solving for Uy" ../../single/log.simpleFoam | cut -d" " -f9 | tr -d "," > ../results/single_UyResiduals.dat
+
+timea=`tail -n 4 ../../overset/log.simpleDyMFoam | grep "Time" | cut -d" " -f3`
+timeb=`tail -n 4 ../../single/log.simpleFoam | grep "Time" | cut -d" " -f3`
+
+echo "0 overset $timea" > ../results/times.dat
+echo "1 single $timeb" >> ../results/times.dat
+
+gnuplot residuals.gp
+gnuplot contours.gp
+gnuplot times.gp
+
+# Return to previous directory
+cd $curDir

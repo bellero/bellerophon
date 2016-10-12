@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# Source tutorial run functions
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+
+rm -rf 0 > /dev/null 2>&1
+mkdir 0 > /dev/null 2>&1
+
+runApplication blockMesh
+runApplication surfaceMeshTriangulate -patches "(inner)" inner.stl
+runApplication holeCutter
+runApplication subsetMesh -overwrite liveCells
+
+runApplication createPatch -overwrite
+
+rm -rf 0 > /dev/null 2>&1 
+cp -r 0.org 0 > /dev/null 2>&1
+
+runApplication diffusiveFoam
+mv log.diffusiveFoam log.diffusiveFoam.serial
+
+mv 10/T 10/T_serial
+
+runApplication decomposePar -cellDist
+runParallel diffusiveFoam 16
+runApplication reconstructPar -latestTime
+
+runApplication foamCalc addSubtract T subtract -field T_serial -time 10 -resultName T_diff

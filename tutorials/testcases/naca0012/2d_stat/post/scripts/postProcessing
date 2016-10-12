@@ -1,0 +1,38 @@
+#!/bin/bash
+
+mkdir -p ../results
+outfile=../results/coeffs.dat
+echo "#alpha CM CD CL" > $outfile
+
+for i in `seq 0 2 20` 15;
+do
+    echo $i `tail -n 1 ../../${i}deg/postProcessing/forces/0/forceCoeffs.dat` | awk '{ print $1 " " $3 " " $4 " " $5}' >> $outfile
+done
+
+for i in 0 10 15;
+do
+    sample -case ../../${i}deg -latestTime > ../../${i}deg/log.sample 2>&1
+    cp ../../${i}deg/postProcessing/sets/*/patchSeed_p.xy ../results/pressure_${i}deg.dat
+    awk '$2 <=+0.002 { printf "%.5f %.5f\n", $1+0.25,$4/(60.0*30.0) }' ../results/pressure_${i}deg.dat | sort > ../results/pressureSide_${i}deg.dat
+    awk '$2 >=-0.002 { printf "%.5f %.5f\n", $1+0.25,$4/(60.0*30.0) }' ../results/pressure_${i}deg.dat | sort > ../results/suctionSide_${i}deg.dat
+done
+
+gnuplot plot.gplt
+
+(
+    cd ../latex
+    mkdir post/results
+    cd post/scripts
+    ./postProcessing
+    cd ../latex
+    latex validation.tex
+    dvips validation.dvi
+    ps2pdf validation.ps
+    latex validation.tex
+    dvips validation.dvi
+    ps2pdf validation.ps
+    latex validation.tex
+    dvips validation.dvi
+    ps2pdf validation.ps
+    rm *.ps *.aux *.dvi *.log
+)

@@ -1,0 +1,67 @@
+\documentclass[a4paper,10pt]{scrartcl}
+\usepackage[utf8]{inputenc}
+
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage[margin=15mm]{geometry}
+
+\footskip=20pt
+
+
+%opening
+\title{Validation of Bellerophon for the cavity test case}
+\author{Andreas Groß}
+
+\begin{document}
+
+\maketitle
+
+\section{Case Description}
+This test case compares the results for a steady laminar flow in a lid-driven
+cavity in two dimensions with \(Re=10^2\). Dimensions of the cavity are 0.1 m
+by 0.1 m and the inlet velocity of the lid is 1 \(\frac{\text m}{\text s}\).
+
+The single grid case is discreticised with 30 cells in each direction. For the
+overset case, the mesh is divided in the horizontal plane and discreticised with
+30 cells in the horizontal direction and 18 cells in the vertical direction with
+an overlap of 2.5 cells.
+
+\section{Results}
+
+The velocity distribution for the overset and single grid are shown in
+Figure~\ref{U}.
+\begin{figure}[!htbp]
+  \centering
+  \resizebox{0.49\columnwidth}{!}{\input{../results/overset_U.tex}}
+  \resizebox{0.49\columnwidth}{!}{\input{../results/single_U.tex}}
+  \caption{Magnitude of velociy}
+  \label{U}
+\end{figure}
+
+A comparison of isobars and isotachs for the calculations is shown in
+Figure~\ref{iso}.
+\begin{figure}[!htbp]
+  \centering
+  \resizebox{0.49\columnwidth}{!}{\input{../results/isobars.tex}}
+  \resizebox{0.49\columnwidth}{!}{\input{../results/isotachs.tex}}
+  \caption{Isobars and isotachs}
+  \label{iso}
+\end{figure}
+
+The convergence history is shown in Figure~\ref{residuals}.
+\begin{figure}[!htbp]
+  \centering
+  \resizebox{0.49\columnwidth}{!}{\input{../results/residuals.tex}}
+  \caption{Covergence history}
+  \label{residuals}
+\end{figure}
+
+A comparison of the computational time is given in Figure~\ref{t}.
+\begin{figure}[!htbp]
+  \centering
+  \resizebox{0.49\columnwidth}{!}{\input{../results/times.tex}}
+  \caption{Computational time}
+  \label{t}
+\end{figure}
+\end{document}

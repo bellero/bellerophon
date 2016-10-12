@@ -1,0 +1,83 @@
+#!/bin/bash
+
+# Source tutorial run functions
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+(
+    cd backgroundMesh
+    runApplication blockMesh
+)
+
+(
+    cd wingMesh
+    mkdir -p 0
+    runApplication fluent3DMeshToFoam naca0012.msh
+    rm -rf constant/polyMesh/sets constant/polyMesh/*Zones
+    runApplication createPatch -overwrite
+    runApplication flattenMesh
+    runApplication setSet -batch setSetBatch
+    rm -rf constant/polyMesh/sets
+    runApplication surfaceMeshTriangulate -patches "(inner)" inner.stl
+)
+
+for a in 0 2 4 6 8 10 12 14 15 16 18 20;
+do
+(
+    cp -r template ${a}deg
+    cd ${a}deg
+
+    EX=`echo "scale=7;c($a/45*a(1))" | bc -l`
+    EY=`echo "scale=7;s($a/45*a(1))" | bc -l`
+    UX=`echo "scale=7;60.0*$EX" | bc`
+    UY=`echo "scale=7;60.0*$EY" | bc`
+    sed -i "s/EX/$EX/" system/controlDict
+    sed -i "s/EY/$EY/" system/controlDict
+
+    mkdir 0
+
+    cp -r ../backgroundMesh/constant/polyMesh constant 
+    cp -r ../wingMesh/inner.stl . 
+    runApplication rotateMesh "(1 0 0)" "($EX $EY 0)"
+    
+    for i in 1 2 3 4;
+    do
+        rm -rf constant/polyMesh/sets
+        for j in 1 2 3 4;
+        do
+            R_X=`echo "scale=7;0.25+(1.5*(5.0-$j))*$EX" | bc`
+            R_Y=`echo "scale=7;(1.5*(5.0-$j))*$EY" | bc`
+            sed -i "s/R_${j}/$R_X $R_Y/" system/topoSetDict.1
+        done
+
+        runApplication topoSet -dict system/topoSetDict.1
+        mv log.topoSet log.topoSet.$i
+        runApplication refineMesh -dict system/refineMeshDict.${i} -overwrite
+        mv log.refineMesh log.refineMesh.$i
+    done
+    
+    runApplication topoSet -dict system/topoSetDict.2
+    mv log.topoSet log.topoSet.0
+    runApplication mergeMeshes . ../wingMesh -overwrite
+    runApplication topoSet -dict system/topoSetDict.3
+    runApplication holeCutter -cellState
+    runApplication subsetMesh -overwrite liveCells
+    runApplication createPatch -overwrite
+    rm -rf 0
+    sed -i "s/UX/$UX/" 0.org/U
+    sed -i "s/UY/$UY/" 0.org/U
+    cp -r 0.org 0
+    runApplication decomposePar
+    runParallel simpleFoam 3
+    runApplication reconstructPar
+    ## runApplication sample -latestTime
+)
+done
+
+while ps | grep simpleFoam > /dev/null 2>&1  ; do sleep 10; done
+
+echo "Calculations finished"
+
+(
+    cd post/scripts
+    ./postProcessing
+)

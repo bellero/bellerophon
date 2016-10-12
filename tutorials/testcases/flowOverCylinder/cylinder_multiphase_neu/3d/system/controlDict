@@ -1,0 +1,109 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.3.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     interFoam;
+
+startFrom       latestTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         60;
+
+deltaT          0.001;
+
+writeControl    runTime; //timeStep;
+
+writeInterval   0.01;
+
+purgeWrite      0;
+
+writeFormat     binary;
+
+writePrecision  6;
+
+writeCompression compressed;
+
+timeFormat      general;
+
+timePrecision   6;
+
+runTimeModifiable true;
+
+adjustTimeStep  yes;
+
+maxCo            0.5;
+maxAlphaCo       0.5;
+maxDeltaT        1;
+
+libs ("libBellerophon.so");
+
+functions
+{ 
+    forces
+    {
+        type        forces;
+          
+        functionObjectLibs ( "libforces.so" );
+
+        outputControl   timeStep;
+        timeInterval    1;
+
+        log         yes;
+
+        patches     ( cylinder );
+        pName       p;
+        UName       U;
+        rhoName     rhoInf;
+        log         true;
+        rhoInf      1000;
+        liftDir     (0 1 0);
+        dragDir     (1 0 0);
+        CofR        (0 0 0);
+        pitchAxis   (0 0 1);
+    }
+
+    coeffs
+    {
+        type            forceCoeffs;
+        functionObjectLibs ( "libforces.so" );
+        outputControl   timeStep;
+        outputInterval  1;
+
+        patches
+        (
+            cylinder
+        );
+
+        pName       p;
+        UName       U;
+        rhoName     rhoInf;
+        log         true;
+        rhoInf      1000;
+        CofR        ( 0 0 0 );
+        liftDir     ( 0 1 0 );
+        dragDir     ( 1 0 0 );
+        pitchAxis   ( 0 0 1 );
+        magUInf     2.63;
+        lRef        1;
+        Aref        6;
+    }
+    #include "fieldAverage"
+}
+
+// ************************************************************************* //

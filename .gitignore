@@ -1,0 +1,10 @@
+lnInclude
+.*
+Make/linux64GccDP*
+*~
+*.dep
+linux64GccDP*
+*.pyc
+
+Publications/*.pdf
+Documentation/*.pdf

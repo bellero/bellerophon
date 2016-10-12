@@ -1,0 +1,25 @@
+    forces
+    {
+        type            forceCoeffs;
+        functionObjectLibs ( "libforces.so" );
+        outputControl   timeStep;
+        outputInterval  1;
+
+        patches
+        (
+            cylinder
+        );
+
+        pName       p;
+        UName       U;
+        rhoName     rhoInf;
+        log         true;
+        rhoInf      1;
+        CofR        ( 0 0 0 );
+        liftDir     ( 0 1 0 );
+        dragDir     ( 1 0 0 );
+        pitchAxis   ( 0 0 1 );
+        magUInf     10;
+        lRef        1;
+        Aref        0.01;
+    }

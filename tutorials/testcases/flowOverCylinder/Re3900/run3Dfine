@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# Source tutorial run functions
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+(
+    cd 3d_transient_fine
+    rm -rf 0 > /dev/null 2>&1
+    mkdir 0 > /dev/null 2>&1
+
+    runApplication blockMesh
+    for i in `seq 0 3`
+    do
+      runApplication setSet -batch setBatch$i
+      mv log.setSet log.setSet.$i
+      runApplication refineMesh -dict system/refineMeshDict -overwrite
+      mv log.refineMesh log.refineMesh.$i
+      rm -rf constant/polyMesh/sets
+    done
+    rm -rf constant/polyMesh/*Zones*
+    runApplication splitMeshRegions -makeCellZones -overwrite
+    rm -rf constant/polyMesh/*Zones*
+    runApplication setSet -batch setBatch4
+    mv log.setSet log.setSet.4
+    rm -rf constant/polyMesh/sets
+
+    runApplication setSet -batch setBatch5
+    mv log.setSet log.setSet.5
+
+    runApplication holeCutter
+
+    runApplication subsetMesh -overwrite liveCells
+
+    runApplication createPatch -overwrite
+
+    rm -rf 0 > /dev/null 2>&1 
+    cp -r 0.org 0 > /dev/null 2>&1
+    
+)
+

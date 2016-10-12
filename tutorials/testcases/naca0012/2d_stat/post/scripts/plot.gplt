@@ -1,0 +1,97 @@
+#!/usr/bin/gnuplot
+
+tex=1
+color=0
+if ( tex > 0 ) {
+  if ( color > 0) {
+    set term epslatex color linewidth 2
+  } else {
+    set term epslatex linewidth 2
+  }
+} else {
+  set termoption dash
+}
+
+
+if( color > 0) {
+  set linetype 1 lc rgb '#DD0000'
+  set linetype 2 lc rgb '#00DD00'
+  set linetype 3 lc rgb '#0000DD'
+  set linetype 4 lc rgb '#000000'
+  set linetype 5 lc rgb '#FF8000'
+  set linetype 6 lc rgb '#909090'
+  set linetype 7 lc rgb '#0080FF'
+} else {
+  set linetype 1 lt 1 lc rgb '#000000'
+  set linetype 2 lt 2 lc rgb '#000000'
+  set linetype 3 lt 3 lc rgb '#000000'
+  set linetype 4 lt 4 lc rgb '#000000'
+  set linetype 5 lt 5 lc rgb '#000000'
+  set linetype 6 lt 6 lc rgb '#000000'
+  set linetype 7 lt 7 lc rgb '#000000'
+}
+
+################################################################################
+# Plot pressure disstribution on wing surface
+
+set xlabel "x/c"
+set ylabel "$c_p$"
+set yrange [] reverse
+set xrange [-0.05:1.05]
+set key inside right top
+if (tex > 0 ) set output "../results/pressure_0deg.tex"
+plot "../results/pressureSide_0deg.dat" using 1:2 w l lt 1 title "Present calculations", \
+     "../results/suctionSide_0deg.dat" using 1:2 w l lt 1 notitle, \
+     "ladson_0deg.dat" using 1:2 w p lt 2 title "Ladson", \
+     "gregory_0deg.dat" using 1:2 w lp lt 3 title "Gregory"
+
+if (tex < 1) pause -1
+
+
+if (tex > 0 ) set output "../results/pressure_10deg.tex"
+plot "../results/pressureSide_10deg.dat" using 1:2 w l lt 1 title "Present calculations", \
+     "../results/suctionSide_10deg.dat" using 1:2 w l lt 1 notitle, \
+     "ladson_10deg.dat" using 1:2 w p lt 2 title "Ladson", \
+     "ladson_10deg.dat" using 3:4 w p lt 2 notitle, \
+     "gregory_10deg.dat" using 1:2 w lp lt 3 title "Gregory"
+
+if (tex < 1) pause -1
+
+
+if (tex > 0 ) set output "../results/pressure_15deg.tex"
+plot "../results/pressureSide_15deg.dat" using 1:2 w l lt 1 title "Present calculations", \
+     "../results/suctionSide_15deg.dat" using 1:2 w l lt 1 notitle, \
+     "ladson_15deg.dat" using 1:2 w p lt 2 title "Ladson", \
+     "ladson_15deg.dat" using 3:4 w p lt 2 notitle, \
+     "gregory_15deg.dat" using 1:2 w lp lt 3 title "Gregory"
+
+
+if (tex < 1) pause -1
+
+################################################################################
+# Plot CL over alpha and CD over CL
+
+set xlabel "$\\alpha$"
+set ylabel "$C_L$"
+set xrange [-1:21]
+set yrange [] noreverse
+if (tex > 0 ) set output "../results/CLoverAlpha.tex"
+plot "../results/coeffs.dat" using 1:4 w l lt 1 title "Present calculations", \
+     "ladson_CLCD.dat" using 1:2 w p lt 2 title "Ladson"
+
+
+if (tex < 1) pause -1
+
+set xlabel "$C_L$"
+set ylabel "$C_D$"
+set autoscale x
+set yrange [0:0.03]
+if (tex > 0 ) set output "../results/CDoverCL.tex"
+plot "../results/coeffs.dat" using 4:3 w l lt 1 title "Present calculations", \
+     "ladson_CLCD.dat" using 2:3 w p lt 2 title "Ladson"
+
+
+if (tex < 1) pause -1
+
+if (tex > 0 ) set output
+

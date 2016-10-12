@@ -1,0 +1,14 @@
+#!/bin/sh
+
+rm -rf calculations
+
+(
+    rm -rf post/results
+
+    cd post/latex
+    rm `ls | grep -v tex` -f > /dev/null 2>&1
+)
+
+rm -f `find . -name *.obj` > /dev/null 2>&1
+rm -f `find . -name *.stl` > /dev/null 2>&1
+rm -f `find . -name cell*` > /dev/null 2>&1

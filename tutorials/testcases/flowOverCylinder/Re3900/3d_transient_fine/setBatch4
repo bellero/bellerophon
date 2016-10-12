@@ -1,0 +1,3 @@
+cellZoneSet inner new setToCellZone region0
+cellZoneSet outer new setToCellZone region1
+quit

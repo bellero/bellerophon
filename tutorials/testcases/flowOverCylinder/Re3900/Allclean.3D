@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# Source tutorial clean functions
+. $WM_PROJECT_DIR/bin/tools/CleanFunctions
+
+for i in coarse medium fine vfine;
+do
+(
+    cd 3d_transient_${i} 
+    cleanCase
+    rm -rf 0 > /dev/null 2>&1
+)
+done

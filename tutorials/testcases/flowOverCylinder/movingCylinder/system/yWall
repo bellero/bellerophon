@@ -1,0 +1,8 @@
+    yWall
+    {
+        type writeRegisteredObject;
+        functionObjectLibs   ( "libIOFunctionObjects.so" );
+        objectNames          ( yWall );
+        outputControl        outputTime;
+        outputInterval       1;
+    }
