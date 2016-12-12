@@ -241,7 +241,7 @@ int main(int argc, char *argv[])
             dimensionedScalar("null",dimless,0.0)
         );
 
-        scalarField& cellStateIField = cellStateField.internalField();
+        scalarField& cellStateIField = cellStateField.primitiveFieldRef();
         forAll(cellStateIField,cellI)
         {
             cellStateIField[cellI] = cellState[cellI];
@@ -331,11 +331,21 @@ int main(int argc, char *argv[])
 
         // Possible acceptor cells as autoPtr< List<searchItem> > for gradient
         // search
+
         autoPtr< List<searchItem> > possibleAcceptorSearchItemsPtr;
+
+        // This is ugly but directly creating a copy causes an error in of-dev - AG 2016/11/30
         possibleAcceptorSearchItemsPtr.set
         (
-            new List<searchItem>(potentialAcceptorItems)
+            new List<searchItem>(potentialAcceptorItems.size())
         );
+        List<searchItem>& possibleAcceptorSearchItems = possibleAcceptorSearchItemsPtr();
+        label itemI = 0;
+        forAllConstIter(SLList<searchItem>, potentialAcceptorItems, iter)
+        {
+            possibleAcceptorSearchItems[itemI++] = *iter;;
+        }
+        
 
         // Search for donor cells of possible acceptor cells
         gradientSearch gs(mesh);
@@ -457,7 +467,7 @@ int main(int argc, char *argv[])
             dimensionedScalar("null",dimless,0.0)
         );
 
-        scalarField& cellStateIField = cellStateField.internalField();
+        scalarField& cellStateIField = cellStateField.primitiveFieldRef();
         forAll(cellStateIField,cellI)
         {
             cellStateIField[cellI] = cellState[cellI];

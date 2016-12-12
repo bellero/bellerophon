@@ -17,24 +17,24 @@ FoamFile
 
 solvers
 {
-    p
+    "U(Final)?"
     {
         solver          bellerophonPBiCG;
         preconditioner  DILU;
-        tolerance       1e-05;
+        tolerance       1e-07;
+        relTol          1e-04;
+    }
+    "p(Final)?"
+    {
+        solver          bellerophonPBiCG;
+        preconditioner  DILU;
+        tolerance       1e-07;
         relTol          1e-02;
     }
 
-    pFinal
+    "k|omega|epsilon|yPsi"
     {
-        $p
-        tolerance       1e-05;
-        relTol          1e-03;
-    }
-
-    "U|UFinal|k|kFinal|omega|omegaFinal"
-    {
-        $p
+        $p;
         tolerance       1e-08;
         relTol          1e-05;
     }
@@ -42,13 +42,17 @@ solvers
 
 PIMPLE
 {
-    nOuterCorrectors         1;
-    nCorrectors              1;
     nNonOrthogonalCorrectors 0;
+    nCorrectors 1;
+    nOuterCorrectors 1;
 }
 
 relaxationFactors
 {
+    p       0.1;
+    U       0.3;
+    k       0.7;
+    omega   0.7;
 }
 
 // ************************************************************************* //

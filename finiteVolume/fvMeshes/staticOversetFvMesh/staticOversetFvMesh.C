@@ -142,8 +142,8 @@ bool Foam::staticOversetFvMesh::update()
                 surfaceVectorField& UfOld = Uf.oldTime();
 
                 // Surface velocities on internal faces
-                vectorField& intUf = Uf.internalField();
-                vectorField& intUfOld = UfOld.internalField();
+                vectorField& intUf = Uf.primitiveFieldRef();
+                vectorField& intUfOld = UfOld.primitiveFieldRef();
 
                 const labelList& own = this->owner();
                 const labelList& nei = this->neighbour();
@@ -226,7 +226,7 @@ bool Foam::staticOversetFvMesh::writeObject
 
     if(!writtenLiveCells) writtenLiveCells = writeLiveCells(this->time().timeName());
 
-    return writtenLiveCells && dynamicFvMesh::writeObjects(fmt, ver, cmp);
+    return writtenLiveCells && dynamicFvMesh::writeObject(fmt, ver, cmp);
 }
 
 // ************************************************************************* //

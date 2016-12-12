@@ -586,7 +586,7 @@ void Foam::bellerophon::updateInterpolation() const
             mesh_,
             dimensionedScalar("null", dimensionSet(0,0,0,0,0,0,0), 0.0)
         );
-        scalarField& cells = cellState.internalField();
+        scalarField& cells = cellState.field();
 
         volVectorField cellCs
         (
@@ -602,7 +602,7 @@ void Foam::bellerophon::updateInterpolation() const
             dimensionedVector("null", dimensionSet(0,0,0,0,0,0,0), vector::zero)
         );
         const vectorField& ccs = mesh_.cellCentres();
-        cellCs.internalField() = ccs;
+        cellCs.field() = ccs;
         cellCs.write();
 
         cellSet acceptorCellSet

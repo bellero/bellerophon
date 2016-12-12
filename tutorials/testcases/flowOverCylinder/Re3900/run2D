@@ -3,7 +3,7 @@
 # Source tutorial run functions
 . $WM_PROJECT_DIR/bin/tools/RunFunctions
 
-if [ ! -e 3d_transient/constant/polyMesh/owner.gz ]; then
+if [ ! -e 3d_transient_coarse/constant/polyMesh/owner.gz ]; then
     ./mesh3Dcoarse
 fi
 
@@ -21,10 +21,8 @@ fi
     rm -rf 0 > /dev/null 2>&1 
     cp -r 0.org 0 > /dev/null 2>&1
     
-    runApplication bellerophonWallDist
-
     runApplication decomposePar
-    runParallel simpleFoam 4
+    runParallel simpleFoam
     runApplication reconstructPar -latestTime
 )
 
@@ -35,7 +33,7 @@ fi
     rm -rf 0/uniform
 
     runApplication decomposePar
-    runParallel pimpleFoam 4
+    runParallel pimpleFoam
     runApplication reconstructPar
 )
 

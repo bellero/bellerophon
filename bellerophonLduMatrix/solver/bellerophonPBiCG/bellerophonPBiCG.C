@@ -187,7 +187,7 @@ Foam::solverPerformance Foam::bellerophonPBiCG::solve
             mesh,
             dimensionedScalar("zero",dimless,0.0)
         );
-        rA_.internalField() = rA;
+        rA_.primitiveFieldRef() = rA;
         rA_.write();
 
         volScalarField rT_
@@ -203,7 +203,7 @@ Foam::solverPerformance Foam::bellerophonPBiCG::solve
             mesh,
             dimensionedScalar("zero",dimless,0.0)
         );
-        rT_.internalField() = rT;
+        rT_.primitiveFieldRef() = rT;
         rT_.write();
 
         volScalarField source_
@@ -219,7 +219,7 @@ Foam::solverPerformance Foam::bellerophonPBiCG::solve
             mesh,
             dimensionedScalar("zero",dimless,0.0)
         );
-        source_.internalField() = source2;
+        source_.primitiveFieldRef() = source2;
         source_.write();
 
         volScalarField psi_
@@ -235,7 +235,7 @@ Foam::solverPerformance Foam::bellerophonPBiCG::solve
             mesh,
             dimensionedScalar("zero",dimless,0.0)
         );
-        psi_.internalField() = psi;
+        psi_.primitiveFieldRef() = psi;
         psi_.write();
 
     }
@@ -355,7 +355,7 @@ Foam::solverPerformance Foam::bellerophonPBiCG::solve
             mesh,
             dimensionedScalar("zero",dimless,0.0)
         );
-        result.internalField() = psi;
+        result.primitiveFieldRef() = psi;
         result.write();
 
         volScalarField pA_final
@@ -371,7 +371,7 @@ Foam::solverPerformance Foam::bellerophonPBiCG::solve
             mesh,
             dimensionedScalar("zero",dimless,0.0)
         );
-        pA_final.internalField() = pA;
+        pA_final.primitiveFieldRef() = pA;
         pA_final.write();
 
         volScalarField pT_final
@@ -387,7 +387,7 @@ Foam::solverPerformance Foam::bellerophonPBiCG::solve
             mesh,
             dimensionedScalar("zero",dimless,0.0)
         );
-        pT_final.internalField() = pT;
+        pT_final.primitiveFieldRef() = pT;
         pT_final.write();
 
         volScalarField wA_final
@@ -403,7 +403,7 @@ Foam::solverPerformance Foam::bellerophonPBiCG::solve
             mesh,
             dimensionedScalar("zero",dimless,0.0)
         );
-        wA_final.internalField() = wA;
+        wA_final.primitiveFieldRef() = wA;
         wA_final.write();
 
         volScalarField wT_final
@@ -419,7 +419,7 @@ Foam::solverPerformance Foam::bellerophonPBiCG::solve
             mesh,
             dimensionedScalar("zero",dimless,0.0)
         );
-        wT_final.internalField() = wT;
+        wT_final.primitiveFieldRef() = wT;
         wT_final.write();
 
         volScalarField rA_final
@@ -435,7 +435,7 @@ Foam::solverPerformance Foam::bellerophonPBiCG::solve
             mesh,
             dimensionedScalar("zero",dimless,0.0)
         );
-        rA_final.internalField() = rA;
+        rA_final.primitiveFieldRef() = rA;
         rA_final.write();
 
         volScalarField rT_final
@@ -451,7 +451,7 @@ Foam::solverPerformance Foam::bellerophonPBiCG::solve
             mesh,
             dimensionedScalar("zero",dimless,0.0)
         );
-        rT_final.internalField() = rT;
+        rT_final.primitiveFieldRef() = rT;
         rT_final.write();
 
 //         volScalarField sourceField
@@ -467,7 +467,7 @@ Foam::solverPerformance Foam::bellerophonPBiCG::solve
 //             mesh,
 //             dimensionedScalar("zero",dimless,0.0)
 //         );
-//         sourceField.internalField() = source2;
+//         sourceField.primitiveFieldRef() = source2;
 //         sourceField.write();
     }
 

@@ -17,22 +17,22 @@ FoamFile
 
 solvers
 {
+    U
+    {
+        solver          bellerophonPBiCG;
+        preconditioner  DILU;
+        tolerance       1e-07;
+        relTol          1e-04;
+    }
     p
     {
         solver          bellerophonPBiCG;
         preconditioner  DILU;
-        tolerance       1e-06;
-        relTol          1e-03;
-    }
-
-    pFinal
-    {
-        $p;
         tolerance       1e-07;
-        relTol          1e-04;
+        relTol          1e-02;
     }
 
-    "U|k|omega|yPsi"
+    "k|omega|epsilon|yPsi"
     {
         $p;
         tolerance       1e-08;
@@ -47,10 +47,10 @@ SIMPLE
 
 relaxationFactors
 {
-    p     0.3;
-    U     0.7;
-    k     0.7;
-    omega 0.7;
+    p       0.1;
+    U       0.3;
+    k       0.7;
+    omega   0.7;
 }
 
 // ************************************************************************* //

@@ -163,7 +163,7 @@ Foam::solidOversetMotionFvMesh::solidOversetMotionFvMesh(const IOobject& io)
         // Update hole boundary
         holeBoundaryPtr_().movePoints
         (
-            transform
+            transformPoints
             (
                 SBMFPtr_().transformation(),
                 boundaryPoints0_
@@ -555,7 +555,7 @@ void Foam::solidOversetMotionFvMesh::interpolateFields
 
         Field<Type>& iField =
             const_cast<GeometricField<Type, fvPatchField, volMesh>&>
-                (field).internalField();
+                (field).primitiveFieldRef();
 
         forAll(itemToCell, procI)
         {
@@ -598,13 +598,13 @@ bool Foam::solidOversetMotionFvMesh::update()
 
     // Transform
     UIndirectList<point>(newPoints, movingPointIDs_) =
-        transform(transf, pointField(newPoints, movingPointIDs_));
+        transformPoints(transf, pointField(newPoints, movingPointIDs_));
 
     // Move mesh
     fvMesh::movePoints(newPoints);
 
     // Update position of hole boundary surface
-    holeBoundaryPtr_().movePoints(transform(transf, boundaryPoints0_));
+    holeBoundaryPtr_().movePoints(transformPoints(transf, boundaryPoints0_));
 
     interfaceIndex_ = addHole();
 
@@ -646,8 +646,8 @@ bool Foam::solidOversetMotionFvMesh::update()
 
         // Transform positions of new live cells to positions of moved overset
         // grid cells
-        transformedPos = transform(inv(oldTransf_),transformedPos);
-        transformedPos = transform(transf,transformedPos);
+        transformedPos = transformPoints(inv(oldTransf_),transformedPos);
+        transformedPos = transformPoints(transf,transformedPos);
 
         Pstream::gather<label>(globalNewLiveCells, sumOp<label>());
         Pstream::scatter<label>(globalNewLiveCells);
@@ -751,7 +751,7 @@ bool Foam::solidOversetMotionFvMesh::update()
                     {
                         if(map[cellI])
                         {
-                            p.internalField()[cellI] =
+                            p.primitiveFieldRef()[cellI] =
                                 interpolatedP.internalField()[cellI];
                         }
                     }
@@ -788,8 +788,8 @@ bool Foam::solidOversetMotionFvMesh::update()
                 const vectorField& intUoldF = UoldF.internalField();
 
                 // Surface velocities on internal faces
-                vectorField& intUf = Uf.internalField();
-                vectorField& intUfOld = UfOld.internalField();
+                vectorField& intUf = Uf.primitiveFieldRef();
+                vectorField& intUfOld = UfOld.primitiveFieldRef();
 
                 const labelList& own = this->owner();
                 const labelList& nei = this->neighbour();
@@ -957,7 +957,7 @@ bool Foam::solidOversetMotionFvMesh::writeObject
  Foam::IOstream::compressionType cmp
 ) const
 {
-    return writeLiveCells(this->time().timeName()) && dynamicFvMesh::writeObjects(fmt, ver, cmp);
+    return writeLiveCells(this->time().timeName()) && this->dynamicFvMesh::writeObject(fmt, ver, cmp);
 }
 
 // ************************************************************************* //

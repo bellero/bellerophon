@@ -258,7 +258,11 @@ const Foam::dictionary& Foam::bellerophon::dict() const
             )
         );
         dictPtr_().lookup("continuityFields") >> continuityFields_;
-        dictPtr_().lookup("forceZeroFields") >> forceZeroFields_;
+
+        if(dictPtr_().found("forceZeroFields"))
+        {
+            dictPtr_().lookup("forceZeroFields") >> forceZeroFields_;
+        }
     }
     return dictPtr_();
 }
@@ -613,8 +617,8 @@ Foam::tmp<Foam::scalarField> Foam::bellerophon::correctSource
     const direction cmpt
 ) const
 {
-    tmp<scalarField> tSource(oldSource);
-    scalarField& newSource = tSource();
+    tmp<scalarField> tSource(new scalarField(oldSource));
+    scalarField& newSource = tSource.ref();
 
     for(label acceptorI=0; acceptorI<nAcceptors_; acceptorI++)
     {

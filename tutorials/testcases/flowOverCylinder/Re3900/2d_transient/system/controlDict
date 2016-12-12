@@ -24,7 +24,7 @@ startTime       0;
 
 stopAt          endTime;
 
-endTime         40;
+endTime         30;
 
 deltaT          5.0e-04;
 
@@ -66,7 +66,7 @@ functions
 
         pName       p;
         UName       U;
-        rhoName     rhoInf;
+        rho         rhoInf;
         log         true;
         rhoInf      1;
         CofR        ( 0 0 0 );

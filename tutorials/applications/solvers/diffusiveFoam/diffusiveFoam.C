@@ -125,7 +125,7 @@ int main(int argc, char *argv[])
             );
 
             solve(TEqn);
-            residual.internalField() = TEqn.residual();
+            residual.primitiveFieldRef() = TEqn.residual();
         }
 
         deltaT-=T;

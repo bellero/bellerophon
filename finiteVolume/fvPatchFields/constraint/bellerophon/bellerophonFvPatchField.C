@@ -82,8 +82,8 @@ bellerophonFvPatchField<Type>::bellerophonFvPatchField
         )   << "    patch type '" << p.type()
             << "' not constraint type '" << typeName << "'"
             << "\n    for patch " << p.name()
-            << " of field " << this->dimensionedInternalField().name()
-            << " in file " << this->dimensionedInternalField().objectPath()
+            << " of field " << this->internalField().name()
+            << " in file " << this->internalField().objectPath()
             << exit(FatalIOError);
     }
 }
@@ -118,28 +118,28 @@ bellerophonFvPatchField<Type>::bellerophonFvPatchField
         )   << "    patch type '" << p.type()
             << "' not constraint type '" << typeName << "'"
             << "\n    for patch " << p.name()
-            << " of field " << this->dimensionedInternalField().name()
-            << " in file " << this->dimensionedInternalField().objectPath()
+            << " of field " << this->internalField().name()
+            << " in file " << this->internalField().objectPath()
             << exit(FatalIOError);
     }
 
     if(debug && forceInterpolation_)
     {
         Info<<"Forcing interpolation for field "
-            <<this->dimensionedInternalField().name()<<endl;
+            <<this->internalField().name()<<endl;
     }
 
     if(debug && bound_)
     {
         Info<<"Bounding field "
-            <<this->dimensionedInternalField().name()
+            <<this->internalField().name()
             <<" during interpolation."<<endl;
     }
 
 //     if(debug && fixesValue_)
 //     {
 //         Info<<"Will pretend to fix value on  "
-//             <<this->dimensionedInternalField().name()
+//             <<this->internalField().name()
 //             <<" if asked."<<endl;
 //     }
 
@@ -225,7 +225,7 @@ Foam::bellerophonFvPatchField<scalar>::snGrad() const
 {
     // TODO gradient might be calculated several times
 
-    const word iFieldName = fvPatchField<scalar>::dimensionedInternalField().name();
+    const word iFieldName = fvPatchField<scalar>::internalField().name();
 
     const GeometricField<scalar, fvPatchField, volMesh>& iField =
         this->db().lookupObject<GeometricField<scalar, fvPatchField, volMesh> >
@@ -235,13 +235,13 @@ Foam::bellerophonFvPatchField<scalar>::snGrad() const
 
     tmp<volVectorField> tIGrad = fvc::grad(iField);
 
-    volVectorField& iGrad = tIGrad();
+    volVectorField& iGrad = tIGrad.ref();
 
     forAll(iGrad.boundaryField(), patchI)
     {
         if(isA<bellerophonFvPatchField<vector> >(iGrad.boundaryField()[patchI]))
         {
-            iGrad.boundaryField()[patchI].initEvaluate(Pstream::nonBlocking);
+            iGrad.boundaryFieldRef()[patchI].initEvaluate(Pstream::nonBlocking);
         }
     }
 
@@ -256,7 +256,7 @@ Foam::bellerophonFvPatchField<vector>::snGrad() const
 {
     // TODO gradient might be calculated several times
 
-    const word iFieldName = fvPatchField<vector>::dimensionedInternalField().name();
+    const word iFieldName = fvPatchField<vector>::internalField().name();
 
     const GeometricField<vector, fvPatchField, volMesh>& iField =
         this->db().lookupObject<GeometricField<vector, fvPatchField, volMesh> >
@@ -266,13 +266,13 @@ Foam::bellerophonFvPatchField<vector>::snGrad() const
 
     tmp<volTensorField> tIGrad = fvc::grad(iField);
 
-    volTensorField& iGrad = tIGrad();
+    volTensorField& iGrad = tIGrad.ref();
 
     forAll(iGrad.boundaryField(), patchI)
     {
         if(isA<bellerophonFvPatchField<tensor> >(iGrad.boundaryField()[patchI]))
         {
-            iGrad.boundaryField()[patchI].initEvaluate(Pstream::nonBlocking);
+            iGrad.boundaryFieldRef()[patchI].initEvaluate(Pstream::nonBlocking);
         }
     }
 
@@ -319,7 +319,7 @@ void bellerophonFvPatchField<Type>::initEvaluate(const Pstream::commsTypes comms
              bellerophon::Interpolation().interfaceFlipMap(interface_.index());
 
         // Access to the values in the field
-        Field<Type>& iField = const_cast<Field<Type>&>(this->internalField());
+        Field<Type>& iField = const_cast<Field<Type>&>(this->primitiveField());
 
         // Zero
         const Type& zero = pTraits<Type>::zero;
@@ -392,7 +392,7 @@ void bellerophonFvPatchField<Type>::initEvaluate(const Pstream::commsTypes comms
 template<class Type>
 const Foam::word& bellerophonFvPatchField<Type>::iFieldName() const
 {
-    return fvPatchField<Type>::dimensionedInternalField().name();
+    return fvPatchField<Type>::internalField().name();
 }
 
 template<class Type>

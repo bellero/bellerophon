@@ -40,9 +40,9 @@ Foam::bellerophonFvsPatchField<Type>::bellerophonFvsPatchField
     massFlux_(0.0),
     fieldName_("")
 {
-    if(notNull(this->dimensionedInternalField()))
+    if(notNull(this->internalField()))
     {
-        fieldName_ = this->dimensionedInternalField().name();
+        fieldName_ = this->internalField().name();
     }
 }
 
@@ -78,9 +78,9 @@ Foam::bellerophonFvsPatchField<Type>::bellerophonFvsPatchField
             << exit(FatalError);
     }
 
-    if(notNull(this->dimensionedInternalField()))
+    if(notNull(this->internalField()))
     {
-        fieldName_ = this->dimensionedInternalField().name();
+        fieldName_ = this->internalField().name();
     }
 }
 
@@ -114,9 +114,9 @@ Foam::bellerophonFvsPatchField<Type>::bellerophonFvsPatchField
             << exit(FatalIOError);
     }
 
-    if(notNull(this->dimensionedInternalField()))
+    if(notNull(this->internalField()))
     {
-        fieldName_ = this->dimensionedInternalField().name();
+        fieldName_ = this->internalField().name();
     }
 }
 
@@ -132,9 +132,9 @@ Foam::bellerophonFvsPatchField<Type>::bellerophonFvsPatchField
     massFlux_(ptf.massFlux_),
     fieldName_("")
 {
-    if(notNull(this->dimensionedInternalField()))
+    if(notNull(this->internalField()))
     {
-        fieldName_ = this->dimensionedInternalField().name();
+        fieldName_ = this->internalField().name();
     }
 }
 
@@ -150,9 +150,9 @@ Foam::bellerophonFvsPatchField<Type>::bellerophonFvsPatchField
     massFlux_(ptf.massFlux_),
     fieldName_("")
 {
-    if(notNull(this->dimensionedInternalField()))
+    if(notNull(this->internalField()))
     {
-        fieldName_ = this->dimensionedInternalField().name();
+        fieldName_ = this->internalField().name();
     }
 }
 
@@ -205,7 +205,7 @@ void bellerophonFvsPatchField<scalar>::enforceContinuity
     // Reference to the field this patch belongs to
     // De-consting the field. DON'T TRY THIS AT HOME
     scalarField& iField =
-        const_cast<scalarField&>(fvsPatchField<scalar>::internalField());
+        const_cast<scalarField&>(fvsPatchField<scalar>::primitiveField());
 
     // Sum of fluxes, positive into acceptor cells
     scalar interfaceSum = 0.0;
@@ -449,7 +449,7 @@ void bellerophonFvsPatchField<vector>::enforceContinuity
     // Reference to the field this patch belongs to
     // De-consting the field. DON'T TRY THIS AT HOME
     vectorField& iField =
-        const_cast<vectorField&>(fvsPatchField<vector>::internalField());
+        const_cast<vectorField&>(fvsPatchField<vector>::primitiveField());
 
     // List of Cells of the mesh
     const cellList& cs = mesh.cells();
@@ -736,7 +736,7 @@ void bellerophonFvsPatchField<Type>::assignHoleInterface(const Type& rhs)
             bellerophon::Interpolation().interfaceFlipMap(holeInterfaceID);
 
         Field<Type>& iField =
-            const_cast<Field<Type>&>(fvsPatchField<Type>::internalField());
+            const_cast<Field<Type>&>(fvsPatchField<Type>::primitiveField());
 
         forAll(interfaceFaces, faceI)
         {

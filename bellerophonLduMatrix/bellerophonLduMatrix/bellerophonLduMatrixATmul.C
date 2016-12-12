@@ -705,7 +705,7 @@ void Foam::bellerophonLduMatrix::residual
     tmp<scalarField> tCorrSource =
         bellerophon::Interpolation().correctSource(source, diag(), cmpt);
 
-    scalarField& source2 = tCorrSource();
+    scalarField& source2 = tCorrSource.ref();
 
     scalar* __restrict__ rAPtr = rA.begin();
 
@@ -850,7 +850,7 @@ Foam::tmp<Foam::scalarField> Foam::bellerophonLduMatrix::residual
 ) const
 {
     tmp<scalarField> trA(new scalarField(psi.size()));
-    residual(trA(), psi, source, interfaceBouCoeffs, interfaces, cmpt);
+    residual(trA.ref(), psi, source, interfaceBouCoeffs, interfaces, cmpt);
     return trA;
 }
 

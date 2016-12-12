@@ -8,25 +8,50 @@
 FoamFile
 {
     version     2.0;
-    format      ascii;
-    class       dictionary;
-    object      decomposeParDict;
+    format      binary;
+    class       volScalarField;
+    location    "0";
+    object      k;
 }
-
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-numberOfSubdomains 6;
+dimensions      [0 2 -1 0 0 0 0];
 
-method          scotch;
+internalField   uniform 1e-03;
 
-simpleCoeffs
+boundaryField
 {
-    n           (2 1 1);
-    delta       0.001;
+    cylinder
+    {
+        type            nutUSpaldingWallFunction;
+        value           $internalField;
+    }
+
+    "inner|outer"
+    {
+        type            bellerophon;
+        bound           true;
+        value           $internalField;
+    }
+
+    inlet
+    {
+        type            calculated;
+        value           $internalField;
+    }
+
+    outlet
+    {
+        type            calculated;
+        value           $internalField;
+    }
+
+    sides
+    {
+        type            calculated;
+        value           $internalField;
+    }
 }
 
-distributed     no;
-
-roots           ( );
 
 // ************************************************************************* //

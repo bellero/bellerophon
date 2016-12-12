@@ -215,7 +215,7 @@ Foam::solverPerformance Foam::printMatrix::solve
             mesh,
             dimensionedScalar("zero",dimless,0.0)
         );
-        Ax_.internalField() = Ax;
+        Ax_.primitiveFieldRef() = Ax;
         Ax_.write();
 
         volScalarField Tx_
@@ -231,7 +231,7 @@ Foam::solverPerformance Foam::printMatrix::solve
             mesh,
             dimensionedScalar("zero",dimless,0.0)
         );
-        Tx_.internalField() = Tx;
+        Tx_.primitiveFieldRef() = Tx;
         Tx_.write();
 
     }

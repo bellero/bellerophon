@@ -4,9 +4,9 @@
 . $WM_PROJECT_DIR/bin/tools/RunFunctions
 
 
-./Allrun.3Dcoarse
+./mesh3Dcoarse
 
-./Allrun.2D
+./run2D
 
 (
     cd 3d_transient_coarse
@@ -16,7 +16,7 @@
     cp system/decomposePar.4 system/decomposePar
 
     runApplication decomposePar
-    runParallel fastMapFields 4 ../2d_transient -sourceTime latestTime -fields (p U)
+    runParallel fastMapFields ../2d_transient -sourceTime latestTime -fields "(p U)"
     runApplication reconstructPar -zeroTime 
 
     cp system/decomposePar.48 system/decomposePar

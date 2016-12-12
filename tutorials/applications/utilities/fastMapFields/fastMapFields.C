@@ -83,7 +83,7 @@ void mapVolField
 
 
     const Field<Type>& ifSource = fieldSource.internalField();
-    Field<Type>& ifTarget = fieldTarget.internalField();
+    Field<Type>& ifTarget = fieldTarget.primitiveFieldRef();
 
     List<List < Type > > transfer(nItemsPerProc.size());
 

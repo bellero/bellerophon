@@ -48,9 +48,9 @@ gradientSearch/gradientSearch.C
 
 /*
 kOmegaSSTwallDist/kOmegaSSTwallDist.C
-*/
 
 wakeVelocity/wakeVelocity.C
 wakeVelocity/wakeVelocityFunctionObject.C
+*/
 
 LIB = $(FOAM_USER_LIBBIN)/libBellerophon
