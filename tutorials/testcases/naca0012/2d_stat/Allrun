@@ -20,7 +20,8 @@
     runApplication surfaceMeshTriangulate -patches "(inner)" inner.stl
 )
 
-for a in 0 2 4 6 8 10 12 14 15 16 18 20;
+#for a in 0 2 4 6 8 10 12 14 15 16 18 20;
+for a in 0 5 10 15 20;
 do
 (
     cp -r template ${a}deg
@@ -67,7 +68,7 @@ do
     sed -i "s/UY/$UY/" 0.org/U
     cp -r 0.org 0
     runApplication decomposePar
-    runParallel simpleFoam 3
+    runParallel simpleFoam
     runApplication reconstructPar
     ## runApplication sample -latestTime
 )

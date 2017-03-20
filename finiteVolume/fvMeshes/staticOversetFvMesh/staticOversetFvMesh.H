@@ -79,7 +79,7 @@ public:
         virtual bool update();
 
         //- Writing the mesh
-        virtual bool writeObject
+        virtual bool writeObjects
         (
             IOstream::streamFormat fmt,
             IOstream::versionNumber ver,
