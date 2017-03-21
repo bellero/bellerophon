@@ -101,10 +101,10 @@ Eside = epsbg**(nside-1)
 Etop = epsz**(ntop-1)
 Ebottom = epsz**(nbottom-1)
 
-if not os.path.exists("3d/constant/polyMesh"):
-  os.makedirs("3d/constant/polyMesh")
+if not os.path.exists("3d/system"):
+  os.makedirs("3d/system")
 
-blockMeshFile = open("3d/constant/polyMesh/blockMeshDict",'w')
+blockMeshFile = open("3d/system/blockMeshDict",'w')
 blockMeshFile.write("/*--------------------------------*- C++ -*----------------------------------*\\\n")
 blockMeshFile.write("| =========                 |                                                 |\n")
 blockMeshFile.write("| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |\n")
