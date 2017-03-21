@@ -24,13 +24,12 @@ boundaryField
     inlet
     {
         type            calculated; //zeroGradient;
-	
-	//type 		fixedValue;
-        //value           $internalField;
+        value           $internalField;
     }
     outlet
     {
         type            calculated; //zeroGradient;
+        value           $internalField;
     }
     cylinder
     {
@@ -40,6 +39,7 @@ boundaryField
     sides
     {
         type            slip;
+        value           $internalField;
     }
     "inner|outer"
     {

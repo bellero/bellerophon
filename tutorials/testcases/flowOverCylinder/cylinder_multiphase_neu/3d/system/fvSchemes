@@ -34,6 +34,7 @@ divSchemes
     div(phi,k)      Gauss upwind; //linearUpwind limitedGrad;
     div(phi,omega)  Gauss upwind; //linearUpwind limitedGrad;
     div((muEff*dev(T(grad(U))))) Gauss linear;
+    div(((rho*nuEff)*dev2(T(grad(U))))) Gauss linear;
 }
 
 laplacianSchemes
@@ -59,5 +60,10 @@ fluxRequired
     alpha.water;
 }
 
+wallDist
+{
+    method Poisson;
+    nRequired false;
+}
 
 // ************************************************************************* //
