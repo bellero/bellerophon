@@ -342,6 +342,7 @@ int main(int argc, char *argv[])
     Info << "Starting gradient search for "<<cc.size()<<" items."<<nl<<endl;
 
     gradientSearch gs(meshSource);
+    gs.ignoreMultiple(true);
     gs.search(itemsPtr);
 
     autoPtr< List< searchItem> > failedItemsPtr = gs.failItems();

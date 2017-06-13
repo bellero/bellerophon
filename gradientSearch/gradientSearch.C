@@ -98,7 +98,7 @@ Foam::label Foam::gradientSearch::searchLocal
 //     bool log = false;
 //     autoPtr<std::ofstream> osPtr;
 //     const vectorField& ccs = mesh_.cellCentres();
-// 
+//
 //     if(item.procID()==1 && item.cellLabel()==22414)
 //     {
 //         log = true;
@@ -355,7 +355,6 @@ Foam::label Foam::gradientSearch::searchLocal
             seedCell = procHit;
             return neighbProcNo;
         }
-        // ELSE RETURN -1 (see below)
     }
 
     return -1;
@@ -475,7 +474,7 @@ void Foam::gradientSearch::search
     // 3. Perform octree search with these items
     // 4. Check which items were found
     // 5. Send still failed items back to their proc
- 
+
     const label nLocalItems = searchableItemsPtr().size();
     label nGlobalItems = nLocalItems;
 
@@ -607,7 +606,7 @@ void Foam::gradientSearch::search
             }
             procNo = searchLocal(searchableItems[itemI], hitFromProc[itemI]);
 
-            // Count the diffrent results
+            // Count the different results
             if(procNo == myProcNo)
             {
                 nLocalItems++;
@@ -653,10 +652,12 @@ void Foam::gradientSearch::search
             {
                 // Copy local item to local item list
                 const searchItem& curItem = searchableItems[itemI];
+
                 localItems[nLocalItems] = curItem;
                 nLocalItems++;
                 label& success =
                     finallyFoundPerProc[curItem.groupID()][curItem.groupIndex()];
+
                 if(success == 0)
                 {
                     success = 1;
@@ -1302,7 +1303,7 @@ void Foam::gradientSearch::collectGlobalSuccess
                     received[itemI] == 1
                 )
                 {
-                    if(finallyFound[itemI] > 0)
+                    if(finallyFound[itemI] > 0 && !ignoreMultiple_)
                     {
                         FatalErrorIn
                         (
@@ -1313,7 +1314,7 @@ void Foam::gradientSearch::collectGlobalSuccess
                         )
                         << "Multiple results for item " << itemI << " proc "
                         << procI << "." << nl
-                        << "Received: "<< received[itemI] << ", stored"
+                        << "Received: "<< received[itemI] << ", stored "
                         << finallyFound[itemI]
                         << exit(FatalError);
                     }
@@ -1439,7 +1440,7 @@ const Foam::boundBox& Foam::gradientSearch::zoneBounds(const label zoneID) const
             "const Foam::boundBox& "
             "Foam::gradientSearch::zoneBounds(const label zoneID) const"
         )
-        << "Requested bounding box for zone with index with " << idx 
+        << "Requested bounding box for zone with index with " << idx
         << ", but only " << zoneBoundPtrs_.size() << " boxes defined."
         << exit(FatalError);
     }

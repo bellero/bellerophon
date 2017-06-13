@@ -32,7 +32,7 @@ private:
     // List of ten last cells
     mutable labelList visited_;
 
-    //- Cell trees for cell zones and overall 
+    //- Cell trees for cell zones and overall
     mutable List< autoPtr< indexedOctree<treeDataCell> > > cellTreePtrs_;
 
     //- Boundboxes for zones
@@ -41,6 +41,8 @@ private:
     mutable autoPtr< List<searchItem> > failItemsPtr_;
 
     mutable autoPtr< List<boundBox> > bBoxesPtr_;
+
+    mutable bool ignoreMultiple_;
 
     //- Disable empty contructor
     gradientSearch();
@@ -103,6 +105,8 @@ public:
     const indexedOctree<treeDataCell>& cellTree(const label zoneID) const;
 
     const boundBox& zoneBounds(const label zoneID) const;
+
+    void ignoreMultiple(bool ignore) const { ignoreMultiple_ = ignore; };
 };
 
 } // End namespace Foam

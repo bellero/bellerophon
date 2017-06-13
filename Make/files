@@ -29,6 +29,7 @@ finiteVolume/fvsPatchFields/constraint/bellerophon/bellerophonFvsPatchFields.C
 finiteVolume/fvMeshes/bellerophonFvMesh/bellerophonFvMesh.C
 finiteVolume/fvMeshes/solidOversetMotionFvMesh/solidOversetMotionFvMesh.C
 finiteVolume/fvMeshes/staticOversetFvMesh/staticOversetFvMesh.C
+finiteVolume/fvMeshes/motionFunctions/phaseShiftedOscillatingLinearMotion/phaseShiftedOscillatingLinearMotion.C
 
 bellerophonPreconditioners=bellerophonLduMatrix/preconditioners
 $(bellerophonPreconditioners)/bellerophonPreconditioner/bellerophonPreconditioner.C

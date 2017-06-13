@@ -61,7 +61,9 @@ namespace Foam
 Foam::staticOversetFvMesh::staticOversetFvMesh(const IOobject& io)
 :
     solidOversetMotionFvMesh(io)
-{}
+{
+    this->moving(false);
+}
 
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
@@ -222,9 +224,7 @@ bool Foam::staticOversetFvMesh::writeObject
  Foam::IOstream::compressionType cmp
 ) const
 {
-    static bool writtenLiveCells = false;
-
-    if(!writtenLiveCells) writtenLiveCells = writeLiveCells(this->time().timeName());
+    bool writtenLiveCells = writeLiveCells(this->time().timeName());
 
     return writtenLiveCells && dynamicFvMesh::writeObject(fmt, ver, cmp);
 }

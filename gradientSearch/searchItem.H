@@ -53,7 +53,8 @@ public:
     position_(vector::zero),
     seed_(0),
     zoneID_(-1),
-    groupID_(-1)
+    groupID_(-1),
+    groupIndex_(-1)
     {};
 
     //- Construct from proc ID and cell label
