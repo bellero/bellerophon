@@ -114,6 +114,12 @@ Foam::label Foam::gradientSearch::searchLocal
 //     }
 
     const Foam::point& curPoint(item.position());
+
+    if(debug>1)
+    {
+        Pout<<"Local gradient search for point at "<<curPoint<<endl;
+    }
+
     // Get seed cell
     label& seedCell = item.seed();
 
@@ -348,15 +354,18 @@ Foam::label Foam::gradientSearch::searchLocal
             // Maybe one wants to insert zoneChecking here, if dealing with special
             // cases like periodic overset grids or other stuff without clearly
             // separated cell zones
+            if(debug>1) Pout << "    Found within own domain"<<endl;
             return Pstream::myProcNo();
         }
         if( !found && (procHit > -1) )
         {
+            if(debug>1) Pout << "    Hit proc "<<neighbProcNo<<endl;
             seedCell = procHit;
             return neighbProcNo;
         }
     }
 
+    if(debug>1) Pout << "    failed"<<endl;
     return -1;
 }
 
