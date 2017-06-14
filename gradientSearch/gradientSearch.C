@@ -34,7 +34,9 @@ neighbour_(mesh.neighbour()),
 neighbourFaceCells_(0),
 visited_(labelList(10,-1)),
 cellTreePtrs_(List< autoPtr<indexedOctree<treeDataCell> > >(mesh_.cellZones().size()+1)),
-zoneBoundPtrs_(List< autoPtr<boundBox> >(mesh_.cellZones().size()+1))
+zoneBoundPtrs_(List< autoPtr<boundBox> >(mesh_.cellZones().size()+1)),
+ignoreMultiple_(false),
+skipGradientSearch_(false)
 {
     if(Pstream::parRun())
     {
@@ -569,6 +571,14 @@ void Foam::gradientSearch::search
     // Linked list of failed items (buffer)
     SLList< searchItem > failedItemsBuffer;
 
+    if(skipGradientSearch_)
+    {
+        forAll(searchableItems, itemI)
+        {
+            failedItemsBuffer.append(searchableItems[itemI]);
+        }
+        searchableItems.setSize(0);
+    }
 
     bool anyProcHit = false;
 

@@ -44,6 +44,8 @@ private:
 
     mutable bool ignoreMultiple_;
 
+    mutable bool skipGradientSearch_;
+
     //- Disable empty contructor
     gradientSearch();
 
@@ -107,6 +109,9 @@ public:
     const boundBox& zoneBounds(const label zoneID) const;
 
     void ignoreMultiple(bool ignore) const { ignoreMultiple_ = ignore; };
+
+    void skipGradientSearch(bool skip) const { skipGradientSearch_ = skip; };
+
 };
 
 } // End namespace Foam
