@@ -214,6 +214,12 @@ int main(int argc, char *argv[])
         "use cell zones (labels have to coincide)"
     );
 
+    argList::addBoolOption
+    (
+        "skipGradientSearch",
+        "use cell zones (labels have to coincide)"
+    );
+
     argList args(argc, argv);
 
     fileName rootDirTarget(args.rootPath());
@@ -255,6 +261,7 @@ int main(int argc, char *argv[])
     wordList cuttingPatches;
 
     const bool useZones = args.optionFound("useZones");
+    const bool skipGradientSearch = args.optionFound("skipGradientSearch");
 
     HashSet<word> selectedFields;
     if (args.optionFound("fields"))
@@ -318,8 +325,8 @@ int main(int argc, char *argv[])
         )
     );
 
-    Info<< "Source mesh size: " << meshSource.nCells() << tab
-        << "Target mesh size: " << meshTarget.nCells() << nl << endl;
+    Info<< "Source mesh size: " << returnReduce(meshSource.nCells(), sumOp<label>()) << tab
+        << "Target mesh size: " << returnReduce(meshTarget.nCells(), sumOp<label>()) << nl << endl;
 
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -343,6 +350,7 @@ int main(int argc, char *argv[])
 
     gradientSearch gs(meshSource);
     gs.ignoreMultiple(true);
+    gs.skipGradientSearch(skipGradientSearch);
     gs.search(itemsPtr);
 
     autoPtr< List< searchItem> > failedItemsPtr = gs.failItems();

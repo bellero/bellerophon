@@ -194,7 +194,7 @@ Foam::autoPtr<Foam::labelList>
 Foam::solidOversetMotionFvMesh::createHoleMap() const
 {
     // Triangular surface search
-    triSurfaceSearch searchEngine(holeBoundaryPtr_());
+    triSurfaceSearch searchEngine(holeBoundaryPtr_(), 1e-08, 10);
 
     // Is the cell inside the hole surface
     const boolList inHole( searchEngine.calcInside( this->cellCentres() ) );
