@@ -32,8 +32,6 @@ python3 createCylinderOversetMultiPhase.py
     runApplication changeDictionary
     rm -rf 0 > /dev/null 2>&1
     cp -r 0.org 0 > /dev/null 2>&1
-    exit
-    runApplication bellerophonWallDist
     runApplication interFoam
     runApplication decomposePar -latestTime
 )
@@ -46,14 +44,13 @@ exit
     cp system/decomposeParDict.6 system/decomposeParDict
     runApplication decomposePar
     mv log.decomposePar log.decomposePar.6
-    runParallel fastMapFields 6 ../2d -sourceTime latestTime
+    runParallel fastMapFields 6 ../2d -sourceTime latestTime -useZones
     runApplication reconstructPar -zeroTime
 
-    rm -f 0/y* 0/alpha.water*
-    cp 0.org/y 0.org/alpha.water 0
+    rm -f 0/alpha.water*
+    cp 0.org/alpha.water 0
 
     runApplication setFields
-    runApplication bellerophonWallDist
 
     cp system/decomposeParDict.32 system/decomposeParDict
     runApplication decomposePar

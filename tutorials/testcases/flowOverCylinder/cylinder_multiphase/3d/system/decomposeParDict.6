@@ -10,54 +10,15 @@ FoamFile
     version     2.0;
     format      ascii;
     class       dictionary;
-    location    "system";
-    object      fvSchemes;
+    note        "mesh decomposition control dictionary";
+    object      decomposeParDict;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-ddtSchemes
-{
-    default         Euler; //localEuler rDeltaT;
-}
+numberOfSubdomains  6;
 
-gradSchemes
-{
-    default         Gauss linear;
-    //limitedGrad     cellLimited Gauss linear 1;
-}
+method          scotch;
 
-divSchemes
-{
-    div(rhoPhi,U)   Gauss linearUpwind grad(U);
-    div(phi,alpha)  Gauss limitedLinear 1;
-    div(phirb,alpha) Gauss linear;
-    div(phi,k)      Gauss upwind; //linearUpwind limitedGrad;
-    div(phi,omega)  Gauss upwind; //linearUpwind limitedGrad;
-    div((muEff*dev(T(grad(U))))) Gauss linear;
-}
-
-laplacianSchemes
-{
-    default         Gauss linear corrected;
-}
-
-interpolationSchemes
-{
-    default         linear;
-}
-
-snGradSchemes
-{
-    default         corrected;
-}
-
-fluxRequired
-{
-    default         no;
-    p_rgh;
-    pcorr;
-    alpha.water;
-}
-
+distributed     no;
 
 // ************************************************************************* //

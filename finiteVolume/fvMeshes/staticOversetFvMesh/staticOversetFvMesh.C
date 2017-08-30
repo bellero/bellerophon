@@ -217,7 +217,7 @@ bool Foam::staticOversetFvMesh::update()
     return false;
 }
 
-bool Foam::staticOversetFvMesh::writeObject
+bool Foam::staticOversetFvMesh::writeObjects
 (
     Foam::IOstream::streamFormat fmt,
  Foam::IOstream::versionNumber ver,
@@ -226,7 +226,7 @@ bool Foam::staticOversetFvMesh::writeObject
 {
     bool writtenLiveCells = writeLiveCells(this->time().timeName());
 
-    return writtenLiveCells && dynamicFvMesh::writeObject(fmt, ver, cmp);
+    return writtenLiveCells && fvMesh::writeObjects(fmt, ver, cmp);
 }
 
 // ************************************************************************* //

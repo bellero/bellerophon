@@ -4,7 +4,8 @@ mkdir -p ../results
 outfile=../results/coeffs.dat
 echo "#alpha CM CD CL" > $outfile
 
-for i in `seq 0 2 20` 15;
+#for i in `seq 0 2 20` 15;
+for i in 0 10 15 20;
 do
     echo $i `tail -n 1 ../../${i}deg/postProcessing/forces/0/forceCoeffs.dat` | awk '{ print $1 " " $3 " " $4 " " $5}' >> $outfile
 done

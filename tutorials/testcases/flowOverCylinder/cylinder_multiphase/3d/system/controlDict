@@ -23,7 +23,7 @@ startTime       0;
 
 stopAt          endTime;
 
-endTime         15;
+endTime         60;
 
 deltaT          0.001;
 
@@ -31,7 +31,7 @@ writeControl    runTime; //timeStep;
 
 writeInterval   0.01;
 
-purgeWrite      5;
+purgeWrite      0;
 
 writeFormat     ascii;
 
@@ -48,7 +48,7 @@ runTimeModifiable true;
 adjustTimeStep  yes;
 
 maxCo            0.5;
-maxAlphaCo	 0.5;
+maxAlphaCo       0.5;
 maxDeltaT        1;
 
 libs ("libBellerophon.so");
@@ -57,26 +57,27 @@ functions
 { 
     forces
     {
-	type        forces;
-	  
-	functionObjectLibs ( "libforces.so" );
+        type        forces;
+          
+        functionObjectLibs ( "libforces.so" );
 
-	outputControl   timeStep;
-	timeInterval    1;
+        outputControl   timeStep;
+        timeInterval    1;
 
-	log         yes;
+        log         yes;
 
-	patches     ( cylinder );
-	pName       p;
-	UName       U;
-	rhoName     rhoInf;
-	log         true;
-	rhoInf      1000;
-	liftDir     (0 1 0);
-	dragDir     (1 0 0);
-	CofR        (0 0 0);
-	pitchAxis   (0 0 1);
+        patches     ( cylinder );
+        pName       p;
+        UName       U;
+        rhoName     rhoInf;
+        log         true;
+        rhoInf      1000;
+        liftDir     (0 1 0);
+        dragDir     (1 0 0);
+        CofR        (0 0 0);
+        pitchAxis   (0 0 1);
     }
+
     coeffs
     {
         type            forceCoeffs;
@@ -102,6 +103,7 @@ functions
         lRef        1;
         Aref        6;
     }
+    #include "fieldAverage"
 }
 
 // ************************************************************************* //
