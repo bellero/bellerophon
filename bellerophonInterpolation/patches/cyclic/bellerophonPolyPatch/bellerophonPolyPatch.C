@@ -38,6 +38,7 @@ License
 #include "faceSet.H"
 #include "cellSet.H"
 #include "meshTriangulation.H"
+#include "triSurfaceTools.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -556,7 +557,13 @@ Foam::autoPtr<Foam::triSurface> Foam::bellerophonPolyPatch::holeBoundary() const
         }
     }
 
-    autoPtr<triSurface> resultPtr(new triSurface(tris, points));
+    autoPtr<triSurface> resultPtr
+    (
+        new triSurface
+        (
+            triSurfaceTools::mergePoints(triSurface(tris, points), 100*SMALL)
+        )
+    );
 
 //     resultPtr().write(this->name()+"_hole"+Foam::name(Pstream::myProcNo())+"_"+mesh.time().timeName()+".stl");
 
