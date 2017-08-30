@@ -385,7 +385,6 @@ void bellerophonFvPatchField<Type>::initEvaluate(const Pstream::commsTypes comms
         // Small
         const Type& small = pTraits<Type>::one * 1e-15;
 
-    
         // Index of the hole interface
         const label holeIndex = interface().holeInterface();
 
@@ -396,6 +395,14 @@ void bellerophonFvPatchField<Type>::initEvaluate(const Pstream::commsTypes comms
         // Flip map of the interface faces of the hole
         const boolList& holeFlipMap =
             bellerophon::Interpolation().interfaceFlipMap(holeIndex);
+
+        // Access to the values in the field
+        Field<Type>& iField = const_cast<Field<Type>&>(this->primitiveField());
+
+        // Access to owners and neighbours
+        const fvMesh& mesh = this->patch().boundaryMesh().mesh();
+        const labelList& own = mesh.owner();
+        const labelList& nei = mesh.neighbour();
 
         forAll(holeFaces, faceI)
         {

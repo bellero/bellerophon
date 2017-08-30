@@ -168,7 +168,7 @@ public:
         bool writeLiveCells(const word&) const;
 
         //- Writing the mesh
-        virtual bool writeObjects
+        virtual bool writeObject
         (
             IOstream::streamFormat fmt,
             IOstream::versionNumber ver,

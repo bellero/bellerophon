@@ -950,14 +950,14 @@ bool Foam::solidOversetMotionFvMesh::writeLiveCells(const word& timeName) const
 }
 
 
-bool Foam::solidOversetMotionFvMesh::writeObjects
+bool Foam::solidOversetMotionFvMesh::writeObject
 (
     Foam::IOstream::streamFormat fmt,
  Foam::IOstream::versionNumber ver,
  Foam::IOstream::compressionType cmp
 ) const
 {
-    return writeLiveCells(this->time().timeName()) && fvMesh::writeObjects(fmt, ver, cmp);
+    return writeLiveCells(this->time().timeName()) && fvMesh::writeObject(fmt, ver, cmp);
 }
 
 // ************************************************************************* //
